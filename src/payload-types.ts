@@ -171,11 +171,6 @@ export interface Tenant {
    * Whether this tenant is active and accessible
    */
   isActive?: boolean | null;
-  settings?: {
-    allowMediaUpload?: boolean | null;
-    maxMediaSize?: number | null;
-    allowedMediaTypes?: ('image/*' | 'video/*' | 'application/pdf' | 'application/*')[] | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -328,13 +323,6 @@ export interface TenantsSelect<T extends boolean = true> {
   logo?: T;
   description?: T;
   isActive?: T;
-  settings?:
-    | T
-    | {
-        allowMediaUpload?: T;
-        maxMediaSize?: T;
-        allowedMediaTypes?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }

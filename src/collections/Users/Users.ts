@@ -1,4 +1,8 @@
 import { isSuperAdmin } from '@/access/isSuperAdmin'
+import { createAccess } from '@/collections/Users/access/create-access'
+import { deleteAccess } from '@/collections/Users/access/delete-access'
+import { readAccess } from '@/collections/Users/access/read-access'
+import { updateAccess } from '@/collections/Users/access/update-access'
 import { setCookieBasedOnDomain } from '@/collections/Users/hooks/setCookieBasedOnDomain'
 import { tenantsArrayField } from '@payloadcms/plugin-multi-tenant/fields'
 import type { CollectionConfig } from 'payload'
@@ -7,34 +11,8 @@ const defaultTenantArrayField = tenantsArrayField({
   tenantsArrayFieldName: 'tenants',
   tenantsArrayTenantFieldName: 'tenant',
   tenantsCollectionSlug: 'tenants',
-  arrayFieldAccess: {
-    read: ({ req }) => {
-      // Users can read their own tenant associations
-      return req.user ? true : false
-    },
-    create: ({ req }) => {
-      // Only super admins can create tenant associations
-      return isSuperAdmin(req.user)
-    },
-    update: ({ req }) => {
-      // Only super admins can update tenant associations
-      return isSuperAdmin(req.user)
-    },
-  },
-  tenantFieldAccess: {
-    read: ({ req }) => {
-      // Users can read their own tenant associations
-      return req.user ? true : false
-    },
-    create: ({ req }) => {
-      // Only super admins can create tenant associations
-      return isSuperAdmin(req.user)
-    },
-    update: ({ req }) => {
-      // Only super admins can update tenant associations
-      return isSuperAdmin(req.user)
-    },
-  },
+  arrayFieldAccess: {},
+  tenantFieldAccess: {},
   rowFields: [
     {
       name: 'roles',
@@ -53,6 +31,12 @@ export const Users: CollectionConfig = {
     useAsTitle: 'email',
   },
   auth: true,
+  access: {
+    create: createAccess,
+    read: readAccess,
+    update: updateAccess,
+    delete: deleteAccess,
+  },
   fields: [
     {
       admin: {

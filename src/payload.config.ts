@@ -7,7 +7,7 @@ import { buildConfig } from 'payload'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
-import { Tenants } from '@/collections/Tenants'
+import { Tenants } from '@/collections/Tenants/Tenants'
 import { multiTenantPlugin } from '@/plugins/multi-tenant-plugin'
 import { Media } from './collections/Media'
 import { Users } from './collections/Users/Users'
