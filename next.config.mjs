@@ -12,6 +12,9 @@ const nextConfig = {
 
     return webpackConfig
   },
+  devIndicators: {
+    position: 'bottom-right',
+  },
 }
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })

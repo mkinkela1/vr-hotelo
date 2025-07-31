@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    tenants: Tenant;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -77,6 +78,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    tenants: TenantsSelect<false> | TenantsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -119,6 +121,15 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
+  tenant?: (number | null) | Tenant;
+  roles?: ('super-admin' | 'user')[] | null;
+  tenants?:
+    | {
+        tenant: number | Tenant;
+        roles: ('tenant-admin' | 'tenant-viewer')[];
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -138,12 +149,49 @@ export interface User {
   password?: string | null;
 }
 /**
+ * Manage tenants for multi-tenant setup. Each tenant represents a separate organization or client.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tenants".
+ */
+export interface Tenant {
+  id: number;
+  name: string;
+  /**
+   * Unique identifier for the tenant (used in URLs)
+   */
+  slug: string;
+  /**
+   * Primary domain for this tenant
+   */
+  domain: string;
+  logo?: (number | null) | Media;
+  description?: string | null;
+  /**
+   * Whether this tenant is active and accessible
+   */
+  isActive?: boolean | null;
+  settings?: {
+    allowMediaUpload?: boolean | null;
+    maxMediaSize?: number | null;
+    allowedMediaTypes?: ('image/*' | 'video/*' | 'application/pdf' | 'application/*')[] | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
   id: number;
+  tenant?: (number | null) | Tenant;
   alt: string;
+  caption?: string | null;
+  /**
+   * When enabled, this media will be a 360 video
+   */
+  is360?: boolean | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -170,6 +218,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'tenants';
+        value: number | Tenant;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -218,6 +270,15 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  tenant?: T;
+  roles?: T;
+  tenants?:
+    | T
+    | {
+        tenant?: T;
+        roles?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -240,7 +301,10 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
+  tenant?: T;
   alt?: T;
+  caption?: T;
+  is360?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -252,6 +316,27 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tenants_select".
+ */
+export interface TenantsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  domain?: T;
+  logo?: T;
+  description?: T;
+  isActive?: T;
+  settings?:
+    | T
+    | {
+        allowMediaUpload?: T;
+        maxMediaSize?: T;
+        allowedMediaTypes?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
