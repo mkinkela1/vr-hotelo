@@ -187,6 +187,10 @@ export interface Media {
    * When enabled, this media will be a 360 video
    */
   is360?: boolean | null;
+  /**
+   * The tenant that uploaded this file
+   */
+  tenant_uploaded?: (number | null) | Tenant;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -300,6 +304,7 @@ export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
   is360?: T;
+  tenant_uploaded?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
