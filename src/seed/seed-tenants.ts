@@ -4,17 +4,17 @@ const tenants = [
   {
     name: 'Tenant 1',
     slug: 'tenant-1',
-    domain: 'tenant-1.com',
+    domain: 'tenant1.vrhotelo.local',
   },
   {
     name: 'Tenant 2',
     slug: 'tenant-2',
-    domain: 'tenant-2.com',
+    domain: 'tenant2.vrhotelo.local',
   },
   {
     name: 'Tenant 3',
     slug: 'tenant-3',
-    domain: 'tenant-3.com',
+    domain: 'tenant3.vrhotelo.local',
   },
 ]
 

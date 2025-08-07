@@ -5,43 +5,25 @@ import { getTenantFromCookie } from '@payloadcms/plugin-multi-tenant/utilities'
 import type { Access, CollectionConfig } from 'payload'
 
 // Access control for Media collection
-const mediaReadAccess: Access = ({ req }) => {
+const mediaReadAccess: Access = async ({ req }) => {
   if (!req?.user) {
     return false
   }
 
   const superAdmin = isSuperAdmin(req.user)
-  const selectedTenant = getTenantFromCookie(
-    req.headers,
-    getCollectionIDType({ payload: req.payload, collectionSlug: 'tenants' }),
-  )
   const adminTenantAccessIDs = getUserTenantIDs(req.user, 'tenant-admin')
   const viewerTenantAccessIDs = getUserTenantIDs(req.user, 'tenant-viewer')
 
+  // 1. Super admin can see all media
   if (superAdmin) {
     return true
   }
 
-  if (selectedTenant) {
-    // Check if user has access to the selected tenant
-    const hasAdminAccess = adminTenantAccessIDs.some((id) => id === selectedTenant)
-    const hasViewerAccess = viewerTenantAccessIDs.some((id) => id === selectedTenant)
-
-    if (hasAdminAccess || hasViewerAccess) {
-      return {
-        tenant: {
-          equals: selectedTenant,
-        },
-      }
-    }
-  }
-
-  // If no specific tenant selected, show media for all tenants user has access to
+  // 2. Tenant-admin and tenant-viewer can only see media uploaded by their tenant
   const allTenantAccessIDs = [...adminTenantAccessIDs, ...viewerTenantAccessIDs]
-
   if (allTenantAccessIDs.length > 0) {
     return {
-      tenant: {
+      tenant_uploaded: {
         in: allTenantAccessIDs,
       },
     }
@@ -187,7 +169,7 @@ export const Media: CollectionConfig = {
     beforeChange: [
       ({ req, data }) => {
         // Auto-assign tenant based on selected tenant in cookie
-        if (!data.tenant_uploadedq && req.user) {
+        if (!data.tenant_uploaded && req.user) {
           const selectedTenant = getTenantFromCookie(
             req.headers,
             getCollectionIDType({ payload: req.payload, collectionSlug: 'tenants' }),

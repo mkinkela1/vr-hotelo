@@ -8,6 +8,7 @@ import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
 import { Tenants } from '@/collections/Tenants/Tenants'
+import { Whitelabels } from '@/collections/Whitelabels'
 import { multiTenantPlugin } from '@/plugins/multi-tenant-plugin'
 import { Media } from './collections/Media'
 import { Users } from './collections/Users/Users'
@@ -21,8 +22,14 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    components: {
+      graphics: {
+        Icon: './graphics/Icon.tsx#Icon',
+        Logo: './graphics/Logo.tsx#Logo',
+      },
+    },
   },
-  collections: [Users, Media, Tenants],
+  collections: [Users, Media, Tenants, Whitelabels],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

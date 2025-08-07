@@ -9,6 +9,7 @@ export const Tenants: CollectionConfig = {
     useAsTitle: 'name',
     description:
       'Manage tenants for multi-tenant setup. Each tenant represents a separate organization or client.',
+    defaultColumns: ['name', 'domain', 'isActive', 'whitelabel'],
   },
   access: {
     read: authenticated,
@@ -44,17 +45,6 @@ export const Tenants: CollectionConfig = {
       },
     },
     {
-      name: 'logo',
-      type: 'upload',
-      relationTo: 'media',
-      label: 'Tenant Logo',
-    },
-    {
-      name: 'description',
-      type: 'textarea',
-      label: 'Description',
-    },
-    {
       name: 'isActive',
       type: 'checkbox',
       defaultValue: true,
@@ -62,6 +52,17 @@ export const Tenants: CollectionConfig = {
       admin: {
         description: 'Whether this tenant is active and accessible',
       },
+    },
+    {
+      name: 'whitelabel',
+      type: 'relationship',
+      relationTo: 'whitelabels',
+      label: 'Whitelabel',
+      admin: {
+        description: 'The whitelabel for this tenant',
+      },
+      hasMany: false,
+      required: false,
     },
   ],
 }
