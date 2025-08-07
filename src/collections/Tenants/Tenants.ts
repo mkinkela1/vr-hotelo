@@ -1,6 +1,7 @@
 import { authenticated } from '@/access/isAuthenticated'
-import { isSuperAdminAccess } from '@/access/isSuperAdmin'
+import { isSuperAdmin, isSuperAdminAccess } from '@/access/isSuperAdmin'
 import { updateAndDeleteAccess } from '@/collections/Tenants/access/update-and-delete-access'
+import { User } from '@/payload-types'
 import { CollectionConfig } from 'payload'
 
 export const Tenants: CollectionConfig = {
@@ -9,7 +10,14 @@ export const Tenants: CollectionConfig = {
     useAsTitle: 'name',
     description:
       'Manage tenants for multi-tenant setup. Each tenant represents a separate organization or client.',
-    defaultColumns: ['name', 'domain', 'isActive', 'whitelabel'],
+    defaultColumns: ['name', 'domain', 'isActive'],
+    hidden: ({ user }) => {
+      if (!user) {
+        return true
+      }
+
+      return !isSuperAdmin(user as unknown as User)
+    },
   },
   access: {
     read: authenticated,

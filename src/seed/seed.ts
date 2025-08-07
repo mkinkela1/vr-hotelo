@@ -30,6 +30,12 @@ async function runSeed() {
     collection: 'tenants',
   })
 
+  // delete all whitelabels
+  await payload.delete({
+    collection: 'whitelabels',
+    where: {},
+  })
+
   // delete all tenants
   await payload.delete({
     collection: 'tenants',
@@ -40,15 +46,9 @@ async function runSeed() {
     },
   })
 
-  // delete all whitelabels
-  await payload.delete({
-    collection: 'whitelabels',
-    where: {},
-  })
-
   const tenants = await seedTenants(payload)
   const users = await seedUsers(payload, tenants)
-  await seedWhitelabels(payload)
+  await seedWhitelabels(payload, tenants)
 
   console.log('Seeded tenants, users, and whitelabels')
 

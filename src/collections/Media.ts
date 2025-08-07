@@ -14,12 +14,10 @@ const mediaReadAccess: Access = async ({ req }) => {
   const adminTenantAccessIDs = getUserTenantIDs(req.user, 'tenant-admin')
   const viewerTenantAccessIDs = getUserTenantIDs(req.user, 'tenant-viewer')
 
-  // 1. Super admin can see all media
   if (superAdmin) {
     return true
   }
 
-  // 2. Tenant-admin and tenant-viewer can only see media uploaded by their tenant
   const allTenantAccessIDs = [...adminTenantAccessIDs, ...viewerTenantAccessIDs]
   if (allTenantAccessIDs.length > 0) {
     return {

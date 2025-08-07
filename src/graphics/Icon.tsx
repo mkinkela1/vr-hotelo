@@ -5,6 +5,7 @@ import Image from 'next/image'
 
 export const Icon = async () => {
   const logoUrl = await getTenantLogo()
+  console.log({ logoUrl })
 
   return <Image src={logoUrl || '/vrhotelo-logo.png'} alt="Logo" width={100} height={100} />
 }

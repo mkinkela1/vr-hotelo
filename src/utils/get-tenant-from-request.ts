@@ -1,4 +1,3 @@
-import { Whitelabel } from '@/payload-types'
 import config from '@/payload.config'
 import { headers } from 'next/headers'
 import { getPayload } from 'payload'
@@ -59,15 +58,20 @@ export const getTenantLogo = async () => {
   const payload = await getPayload({ config: payloadConfig })
 
   try {
-    const tenant = await payload.findByID({
-      collection: 'tenants',
-      id: tenantId,
+    const whitelabel = await payload.find({
+      collection: 'whitelabels',
+      depth: 1,
+      where: {
+        tenant: {
+          equals: tenantId,
+        },
+      },
+      limit: 1,
     })
 
-    if (tenant.whitelabel) {
-      const whitelabel = tenant.whitelabel as Whitelabel
-
-      return whitelabel.url
+    if (whitelabel.docs.length > 0) {
+      console.log({ whitelabel: whitelabel.docs[0].url })
+      return whitelabel.docs[0].url
     }
   } catch (error) {
     console.error('Error fetching tenant logo:', error)

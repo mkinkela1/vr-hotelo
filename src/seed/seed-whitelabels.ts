@@ -1,35 +1,22 @@
+import { Tenant } from '@/payload-types'
 import { Payload } from 'payload'
 
-export default async function seedWhitelabels(payload: Payload) {
-  // First, get all tenants
-  const tenants = await payload.find({
-    collection: 'tenants',
-  })
+export default async function seedWhitelabels(payload: Payload, tenants: Tenant[]) {
+  const files = ['tenant-1.jpg', 'tenant-2.jpg', 'tenant-3.jpg']
 
-  // Create a sample media file for the logo
-  const logoMedia = await payload.create({
-    collection: 'media',
-    data: {
-      alt: 'Sample Logo',
-      filename: 'sample-logo.png',
-      mimeType: 'image/png',
-      filesize: 1024,
-      width: 200,
-      height: 200,
-      url: '/media/sample-logo.png',
-      thumbnailURL: '/media/sample-logo-thumbnail.png',
-    },
-  })
+  let count = 0
 
-  // Create whitelabels for each tenant
-  for (const tenant of tenants.docs) {
+  for (const tenant of tenants) {
     await payload.create({
       collection: 'whitelabels',
       data: {
         tenant: tenant.id,
-        logo: logoMedia.id,
+        url: `/${files[count]}`,
       },
+      filePath: `public/${files[count]}`,
+      overwriteExistingFiles: true,
     })
+    count++
   }
 
   console.log('Created whitelabels for all tenants')

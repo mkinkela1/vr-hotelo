@@ -1,6 +1,7 @@
 import { isSuperAdmin } from '@/access/isSuperAdmin'
 import { createAccess } from '@/collections/Users/access/create-access'
 import { deleteAccess } from '@/collections/Users/access/delete-access'
+import { canListUsers } from '@/collections/Users/access/list-access'
 import { readAccess } from '@/collections/Users/access/read-access'
 import { updateAccess } from '@/collections/Users/access/update-access'
 import { setCookieBasedOnDomain } from '@/collections/Users/hooks/setCookieBasedOnDomain'
@@ -29,6 +30,7 @@ export const Users: CollectionConfig = {
   slug: 'users',
   admin: {
     useAsTitle: 'email',
+    hidden: ({ user }) => !canListUsers(user),
   },
   auth: true,
   access: {

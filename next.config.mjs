@@ -15,6 +15,15 @@ const nextConfig = {
   devIndicators: {
     position: 'bottom-right',
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: '**.vrhotelo.local',
+        port: '3000',
+      },
+    ],
+  },
 }
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })

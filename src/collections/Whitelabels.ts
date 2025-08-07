@@ -1,14 +1,11 @@
 import { isSuperAdmin } from '@/access/isSuperAdmin'
+import { User } from '@/payload-types'
 import type { Access, CollectionConfig } from 'payload'
 
 // Access control for Whitelabels collection
 const whitelabelsReadAccess: Access = ({ req }) => {
   // Anyone can read whitelabels (public access)
-  if (!req?.user) {
-    return false
-  }
-
-  return isSuperAdmin(req.user)
+  return true
 }
 
 const whitelabelsCreateAccess: Access = ({ req }) => {
@@ -66,5 +63,12 @@ export const Whitelabels: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'tenant',
+    hidden: ({ user }) => {
+      if (!user) {
+        return true
+      }
+
+      return !isSuperAdmin(user as unknown as User)
+    },
   },
 }

@@ -28,6 +28,7 @@ export default async function seedTenants(payload: Payload) {
 
   const allTenants = await payload.find({
     collection: 'tenants',
+    sort: 'name',
   })
 
   return allTenants.docs
