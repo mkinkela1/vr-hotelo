@@ -5,6 +5,7 @@ import { canListUsers } from '@/collections/Users/access/list-access'
 import { readAccess } from '@/collections/Users/access/read-access'
 import { updateAccess } from '@/collections/Users/access/update-access'
 import { setCookieBasedOnDomain } from '@/collections/Users/hooks/setCookieBasedOnDomain'
+import { validateTenantAccess } from '@/collections/Users/hooks/validate-tenant-access'
 import { tenantsArrayField } from '@payloadcms/plugin-multi-tenant/fields'
 import type { CollectionConfig } from 'payload'
 
@@ -65,6 +66,7 @@ export const Users: CollectionConfig = {
   ],
 
   hooks: {
+    beforeLogin: [validateTenantAccess],
     afterLogin: [setCookieBasedOnDomain],
   },
 }
