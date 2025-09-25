@@ -20,16 +20,16 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/payloadcms:${{ github.sha }} .
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/vrhotel-cms:${{ github.sha }} .
 
       - name: Push Docker image
         run: |
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/payloadcms:${{ github.sha }}
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/vrhotel-cms:${{ github.sha }}
 
       - name: Push latest tag
         run: |
-          docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/payloadcms:${{ github.sha }} ${{ secrets.DOCKER_HUB_USERNAME }}/payloadcms:latest
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/payloadcms:latest
+          docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/vrhotel-cms:${{ github.sha }} ${{ secrets.DOCKER_HUB_USERNAME }}/vrhotel-cms:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/vrhotel-cms:latest
 
       - name: Trigger Coolify Deployment
         run: |
