@@ -10,7 +10,7 @@ until pg_isready -d "$DATABASE_URI" >/dev/null 2>&1; do
 done
 
 echo "Running PayloadCMS migrations..."
-npx payload migrate:latest
+npx payload migrate
 
 echo "Starting Next.js server..."
 exec node server.js
