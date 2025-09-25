@@ -3,8 +3,8 @@ set -e
 
 echo "Waiting for database..."
 
-# Wait until PostgreSQL is ready using DATABASE_URL
-until pg_isready -d "$DATABASE_URL" >/dev/null 2>&1; do
+# Wait until PostgreSQL is ready using DATABASE_URI
+until pg_isready -d "$DATABASE_URI" >/dev/null 2>&1; do
   echo "Database not ready yet, sleeping 2s..."
   sleep 2
 done
