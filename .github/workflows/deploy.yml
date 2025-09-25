@@ -1,0 +1,39 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build-push-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Docker Hub Login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/payloadcms:${{ github.sha }} .
+
+      - name: Push Docker image
+        run: |
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/payloadcms:${{ github.sha }}
+
+      - name: Push latest tag
+        run: |
+          docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/payloadcms:${{ github.sha }} ${{ secrets.DOCKER_HUB_USERNAME }}/payloadcms:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/payloadcms:latest
+
+      - name: Trigger Coolify Deployment
+        run: |
+          curl -X POST ${{ secrets.COOLIFY_INSTANCE_URL }}/api/webhooks/deploy \
+            -H "Authorization: Bearer ${{ secrets.COOLIFY_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{"ref":"main"}'
