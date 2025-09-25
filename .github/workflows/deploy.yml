@@ -20,20 +20,20 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/vrhotel-cms:${{ github.sha }} .
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/vrhotelo-cms:${{ github.sha }} .
 
       - name: Push Docker image
         run: |
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/vrhotel-cms:${{ github.sha }}
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/vrhotelo-cms:${{ github.sha }}
 
       - name: Push latest tag
         run: |
-          docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/vrhotel-cms:${{ github.sha }} ${{ secrets.DOCKER_HUB_USERNAME }}/vrhotel-cms:latest
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/vrhotel-cms:latest
+          docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/vrhotelo-cms:${{ github.sha }} ${{ secrets.DOCKER_HUB_USERNAME }}/vrhotelo-cms:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/vrhotelo-cms:latest
 
       - name: Trigger Coolify Deployment
         run: |
           curl -X POST ${{ secrets.COOLIFY_INSTANCE_URL }}/api/webhooks/deploy \
             -H "Authorization: Bearer ${{ secrets.COOLIFY_API_KEY }}" \
             -H "Content-Type: application/json" \
-            -d '{"ref":"main"}'
+            -d '{"ref":"master"}'
