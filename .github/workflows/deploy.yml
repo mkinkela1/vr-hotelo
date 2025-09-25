@@ -35,5 +35,3 @@ jobs:
         run: |
           curl -X POST ${{ secrets.COOLIFY_INSTANCE_URL }}/api/v1/deploy?uuid=fwkw8g8gww00g4ggg0w8gg4s&force=false \
             -H "Authorization: Bearer ${{ secrets.COOLIFY_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d '{"ref":"master"}'
