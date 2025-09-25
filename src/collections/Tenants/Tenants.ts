@@ -1,4 +1,4 @@
-import { authenticated } from '@/access/isAuthenticated'
+import { anyone } from '@/access/anyone'
 import { isSuperAdmin, isSuperAdminAccess } from '@/access/isSuperAdmin'
 import { updateAndDeleteAccess } from '@/collections/Tenants/access/update-and-delete-access'
 import { User } from '@/payload-types'
@@ -20,7 +20,7 @@ export const Tenants: CollectionConfig = {
     },
   },
   access: {
-    read: authenticated,
+    read: anyone,
     create: isSuperAdminAccess,
     update: updateAndDeleteAccess,
     delete: updateAndDeleteAccess,
