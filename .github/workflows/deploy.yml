@@ -33,7 +33,7 @@ jobs:
 
       - name: Trigger Coolify Deployment
         run: |
-          curl -X POST ${{ secrets.COOLIFY_INSTANCE_URL }}/api/webhooks/deploy \
+          curl -X POST ${{ secrets.COOLIFY_INSTANCE_URL }}/api/webhooks/deploy?uuid=fwkw8g8gww00g4ggg0w8gg4s&force=false \
             -H "Authorization: Bearer ${{ secrets.COOLIFY_API_KEY }}" \
             -H "Content-Type: application/json" \
             -d '{"ref":"master"}'
