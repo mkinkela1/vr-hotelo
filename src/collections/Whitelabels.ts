@@ -56,7 +56,6 @@ export const Whitelabels: CollectionConfig = {
     },
   ],
   upload: {
-    staticDir: '../../public/media',
     adminThumbnail: 'thumbnail',
     focalPoint: true,
     mimeTypes: ['image/*'],

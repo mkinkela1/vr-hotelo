@@ -158,7 +158,6 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
-    staticDir: '../../public/media',
     adminThumbnail: 'thumbnail',
     focalPoint: true,
     mimeTypes: ['image/*', 'video/*', 'application/pdf'],

@@ -6,8 +6,10 @@ import { readAccess } from '@/collections/Users/access/read-access'
 import { updateAccess } from '@/collections/Users/access/update-access'
 import { setCookieBasedOnDomain } from '@/collections/Users/hooks/setCookieBasedOnDomain'
 import { validateTenantAccess } from '@/collections/Users/hooks/validate-tenant-access'
+import config from '@payload-config'
 import { tenantsArrayField } from '@payloadcms/plugin-multi-tenant/fields'
-import type { CollectionConfig } from 'payload'
+import { extractJWT, getPayload, type CollectionConfig } from 'payload'
+import { extractID } from 'payload/shared'
 
 const defaultTenantArrayField = tenantsArrayField({
   tenantsArrayFieldName: 'tenants',
@@ -33,7 +35,34 @@ export const Users: CollectionConfig = {
     useAsTitle: 'email',
     hidden: ({ user }) => !canListUsers(user),
   },
-  auth: true,
+  auth: {
+    tokenExpiration: 30 * 365 * 24 * 60 * 60,
+    strategies: [
+      {
+        name: 'bearer-token',
+        authenticate: async ({ headers }) => {
+          const payload = await getPayload({ config })
+          const decoded = extractJWT({ headers, payload })
+          if (!decoded) {
+            return { user: null }
+          }
+
+          try {
+            const id = extractID(decoded)
+
+            const user = await payload.findByID({
+              collection: 'users',
+              id,
+            })
+
+            return { user: { ...user, collection: 'users' } }
+          } catch (error) {
+            return { user: null }
+          }
+        },
+      },
+    ],
+  },
   access: {
     create: createAccess,
     read: readAccess,

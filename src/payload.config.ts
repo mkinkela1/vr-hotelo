@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url'
 import { Tenants } from '@/collections/Tenants/Tenants'
 import { Whitelabels } from '@/collections/Whitelabels'
 import { multiTenantPlugin } from '@/plugins/multi-tenant-plugin'
+import { s3Plugin } from '@/plugins/s3.plugin'
 import { Media } from './collections/Media'
 import { Users } from './collections/Users/Users'
 
@@ -18,6 +19,7 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
   admin: {
+    theme: 'light',
     user: Users.slug,
     importMap: {
       baseDir: path.resolve(dirname),
@@ -42,7 +44,7 @@ export default buildConfig({
     logger: true,
   }),
   sharp,
-  plugins: [payloadCloudPlugin(), multiTenantPlugin],
+  plugins: [payloadCloudPlugin(), multiTenantPlugin, s3Plugin],
   // Enable debug mode to see queries
   debug: true,
 })
