@@ -8,11 +8,13 @@ import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
 import { Tenants } from '@/collections/Tenants/Tenants'
+import { Thumbnails } from '@/collections/Thumbnails'
 import { Whitelabels } from '@/collections/Whitelabels'
 import { multiTenantPlugin } from '@/plugins/multi-tenant-plugin'
 import { s3Plugin } from '@/plugins/s3.plugin'
+import { defaultLocale, locales } from '@/utils/locales'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
-import { Media } from './collections/Media'
+import { Media } from './collections/Media/Media'
 import { Users } from './collections/Users/Users'
 
 const filename = fileURLToPath(import.meta.url)
@@ -36,7 +38,7 @@ export default buildConfig({
       },
     },
   },
-  collections: [Users, Media, Tenants, Whitelabels],
+  collections: [Users, Media, Tenants, Whitelabels, Thumbnails],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -62,6 +64,11 @@ export default buildConfig({
       logger: true,
     },
   }),
+  localization: {
+    locales,
+    defaultLocale,
+    fallback: true,
+  },
   sharp,
   plugins: [payloadCloudPlugin(), multiTenantPlugin, s3Plugin],
   debug: true,

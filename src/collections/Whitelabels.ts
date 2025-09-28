@@ -58,6 +58,7 @@ export const Whitelabels: CollectionConfig = {
   upload: {
     adminThumbnail: 'thumbnail',
     focalPoint: true,
+    disableLocalStorage: true,
     mimeTypes: ['image/*'],
   },
   admin: {

@@ -4,6 +4,7 @@ export const s3Plugin = s3Storage({
   collections: {
     media: true,
     whitelabels: true,
+    thumbnails: true,
   },
   bucket: process.env.S3_BUCKET || '',
   config: {

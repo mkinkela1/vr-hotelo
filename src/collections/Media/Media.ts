@@ -1,6 +1,7 @@
 import { isSuperAdmin } from '@/access/isSuperAdmin'
 import { getCollectionIDType } from '@/utils/get-collection-id-types'
 import { getUserTenantIDs } from '@/utils/get-user-tenant-id'
+import { defaultLocale, locales } from '@/utils/locales'
 import { getTenantFromCookie } from '@payloadcms/plugin-multi-tenant/utilities'
 import type { Access, CollectionConfig } from 'payload'
 
@@ -133,6 +134,38 @@ export const Media: CollectionConfig = {
       },
     },
     {
+      name: 'locale',
+      type: 'select',
+      options: locales.map((locale) => ({
+        label: locale.label,
+        value: locale.code,
+      })),
+      defaultValue: defaultLocale,
+      label: 'Locale',
+      admin: {
+        description: 'The locale of the media',
+      },
+    },
+    {
+      name: 'thumbnail',
+      type: 'relationship',
+      relationTo: 'thumbnails',
+      hasMany: false,
+      admin: {
+        description: 'The thumbnail of the media',
+      },
+    },
+    {
+      name: 'thumbnail_renderer',
+      type: 'ui',
+      admin: {
+        position: 'sidebar',
+        components: {
+          Field: '/collections/Media/components/ThumbnailRenderer',
+        },
+      },
+    },
+    {
       name: 'tenant_uploaded',
       label: 'Tenant uploaded',
       type: 'relationship',
@@ -160,6 +193,7 @@ export const Media: CollectionConfig = {
   upload: {
     adminThumbnail: 'thumbnail',
     focalPoint: true,
+    disableLocalStorage: true,
     mimeTypes: ['image/*', 'video/*', 'application/pdf'],
   },
   hooks: {

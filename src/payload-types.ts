@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     tenants: Tenant;
     whitelabels: Whitelabel;
+    thumbnails: Thumbnail;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -81,6 +82,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     tenants: TenantsSelect<false> | TenantsSelect<true>;
     whitelabels: WhitelabelsSelect<false> | WhitelabelsSelect<true>;
+    thumbnails: ThumbnailsSelect<false> | ThumbnailsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -90,7 +92,7 @@ export interface Config {
   };
   globals: {};
   globalsSelect: {};
-  locale: null;
+  locale: 'hr' | 'en' | 'fr' | 'de' | 'it';
   user: User & {
     collection: 'users';
   };
@@ -214,6 +216,40 @@ export interface Media {
    */
   is360?: boolean | null;
   /**
+   * The locale of the media
+   */
+  locale?: ('hr' | 'en' | 'fr' | 'de' | 'it') | null;
+  /**
+   * The thumbnail of the media
+   */
+  thumbnail?: (number | null) | Thumbnail;
+  /**
+   * The tenant that uploaded this file
+   */
+  tenant_uploaded?: (number | null) | Tenant;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "thumbnails".
+ */
+export interface Thumbnail {
+  id: number;
+  /**
+   * The title of the thumbnail
+   */
+  title?: string | null;
+  /**
    * The tenant that uploaded this file
    */
   tenant_uploaded?: (number | null) | Tenant;
@@ -251,6 +287,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'whitelabels';
         value: number | Whitelabel;
+      } | null)
+    | ({
+        relationTo: 'thumbnails';
+        value: number | Thumbnail;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -334,6 +374,8 @@ export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
   is360?: T;
+  locale?: T;
+  thumbnail?: T;
   tenant_uploaded?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -366,6 +408,25 @@ export interface TenantsSelect<T extends boolean = true> {
  */
 export interface WhitelabelsSelect<T extends boolean = true> {
   tenant?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "thumbnails_select".
+ */
+export interface ThumbnailsSelect<T extends boolean = true> {
+  title?: T;
+  tenant_uploaded?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
