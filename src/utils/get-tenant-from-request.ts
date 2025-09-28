@@ -3,7 +3,11 @@ import { headers } from 'next/headers'
 import { getPayload } from 'payload'
 
 export const getUrlFromHost = (host: string) => {
-  const cleanHost = host.replace('https://', '').replace('http://', '')
+  const cleanHost = host
+    .replace('https://', '')
+    .replace('http://', '')
+    .replace('www.', '')
+    .replace('app.', '')
   const hostname = cleanHost.split(':')[0]
 
   return hostname
@@ -70,7 +74,6 @@ export const getTenantLogo = async () => {
     })
 
     if (whitelabel.docs.length > 0) {
-      console.log({ whitelabel: whitelabel.docs[0].url })
       return whitelabel.docs[0].url
     }
   } catch (error) {

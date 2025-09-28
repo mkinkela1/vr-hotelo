@@ -1,110 +1,12 @@
 import { isSuperAdmin } from '@/access/isSuperAdmin'
+import { mediaCreateAccess } from '@/collections/Media/access/create-access'
+import { mediaDeleteAccess } from '@/collections/Media/access/delete-access'
+import { mediaReadAccess } from '@/collections/Media/access/read-access'
+import { mediaUpdateAccess } from '@/collections/Media/access/update-access'
 import { getCollectionIDType } from '@/utils/get-collection-id-types'
-import { getUserTenantIDs } from '@/utils/get-user-tenant-id'
 import { defaultLocale, locales } from '@/utils/locales'
 import { getTenantFromCookie } from '@payloadcms/plugin-multi-tenant/utilities'
-import type { Access, CollectionConfig } from 'payload'
-
-// Access control for Media collection
-const mediaReadAccess: Access = async ({ req }) => {
-  if (!req?.user) {
-    return false
-  }
-
-  const superAdmin = isSuperAdmin(req.user)
-  const adminTenantAccessIDs = getUserTenantIDs(req.user, 'tenant-admin')
-  const viewerTenantAccessIDs = getUserTenantIDs(req.user, 'tenant-viewer')
-
-  if (superAdmin) {
-    return true
-  }
-
-  const allTenantAccessIDs = [...adminTenantAccessIDs, ...viewerTenantAccessIDs]
-  if (allTenantAccessIDs.length > 0) {
-    return {
-      tenant_uploaded: {
-        in: allTenantAccessIDs,
-      },
-    }
-  }
-
-  return false
-}
-
-const mediaCreateAccess: Access = ({ req }) => {
-  if (!req?.user) {
-    return false
-  }
-
-  const superAdmin = isSuperAdmin(req.user)
-  const selectedTenant = getTenantFromCookie(
-    req.headers,
-    getCollectionIDType({ payload: req.payload, collectionSlug: 'tenants' }),
-  )
-  const adminTenantAccessIDs = getUserTenantIDs(req.user, 'tenant-admin')
-
-  if (superAdmin) {
-    return true
-  }
-
-  if (selectedTenant) {
-    // Only tenant-admin can create media for their tenant
-    const hasAdminAccess = adminTenantAccessIDs.some((id) => id === selectedTenant)
-    return hasAdminAccess
-  }
-
-  return false
-}
-
-const mediaUpdateAccess: Access = ({ req }) => {
-  if (!req?.user) {
-    return false
-  }
-
-  const superAdmin = isSuperAdmin(req.user)
-  const selectedTenant = getTenantFromCookie(
-    req.headers,
-    getCollectionIDType({ payload: req.payload, collectionSlug: 'tenants' }),
-  )
-  const adminTenantAccessIDs = getUserTenantIDs(req.user, 'tenant-admin')
-
-  if (superAdmin) {
-    return true
-  }
-
-  if (selectedTenant) {
-    // Only tenant-admin can update media for their tenant
-    const hasAdminAccess = adminTenantAccessIDs.some((id) => id === selectedTenant)
-    return hasAdminAccess
-  }
-
-  return false
-}
-
-const mediaDeleteAccess: Access = ({ req }) => {
-  if (!req?.user) {
-    return false
-  }
-
-  const superAdmin = isSuperAdmin(req.user)
-  const selectedTenant = getTenantFromCookie(
-    req.headers,
-    getCollectionIDType({ payload: req.payload, collectionSlug: 'tenants' }),
-  )
-  const adminTenantAccessIDs = getUserTenantIDs(req.user, 'tenant-admin')
-
-  if (superAdmin) {
-    return true
-  }
-
-  if (selectedTenant) {
-    // Only tenant-admin can delete media for their tenant
-    const hasAdminAccess = adminTenantAccessIDs.some((id) => id === selectedTenant)
-    return hasAdminAccess
-  }
-
-  return false
-}
+import type { CollectionConfig } from 'payload'
 
 export const Media: CollectionConfig = {
   slug: 'media',
