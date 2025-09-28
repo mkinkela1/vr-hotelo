@@ -11,6 +11,7 @@ import { Tenants } from '@/collections/Tenants/Tenants'
 import { Whitelabels } from '@/collections/Whitelabels'
 import { multiTenantPlugin } from '@/plugins/multi-tenant-plugin'
 import { s3Plugin } from '@/plugins/s3.plugin'
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { Media } from './collections/Media'
 import { Users } from './collections/Users/Users'
 
@@ -19,6 +20,10 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
   admin: {
+    meta: {
+      icons: [{ url: '/favicon.png', rel: 'icon', type: 'image/png' }],
+      title: 'VR Hotelo Admin',
+    },
     theme: 'light',
     user: Users.slug,
     importMap: {
@@ -43,8 +48,21 @@ export default buildConfig({
     },
     logger: true,
   }),
+  email: nodemailerAdapter({
+    defaultFromAddress: 'support@vrhotelo.com',
+    defaultFromName: 'VR Hotelo - Support',
+    transportOptions: {
+      host: process.env.SMTP_HOST || '',
+      port: Number(process.env.SMTP_PORT) || 587,
+      auth: {
+        user: process.env.SMTP_USER || '',
+        pass: process.env.SMTP_PASSWORD || '',
+      },
+      debug: true,
+      logger: true,
+    },
+  }),
   sharp,
   plugins: [payloadCloudPlugin(), multiTenantPlugin, s3Plugin],
-  // Enable debug mode to see queries
   debug: true,
 })

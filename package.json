@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.57.0",
+    "@payloadcms/email-nodemailer": "^3.57.0",
     "@payloadcms/next": "3.57.0",
     "@payloadcms/payload-cloud": "3.57.0",
     "@payloadcms/plugin-multi-tenant": "3.57.0",
