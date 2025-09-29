@@ -3,11 +3,7 @@ import { headers } from 'next/headers'
 import { getPayload } from 'payload'
 
 export const getUrlFromHost = (host: string) => {
-  const cleanHost = host
-    .replace('https://', '')
-    .replace('http://', '')
-    .replace('www.', '')
-    .replace('app.', '')
+  const cleanHost = host.replace('https://', '').replace('http://', '').replace('www.', '')
   const hostname = cleanHost.split(':')[0]
 
   return hostname
