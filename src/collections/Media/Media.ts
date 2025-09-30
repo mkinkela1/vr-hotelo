@@ -96,7 +96,7 @@ export const Media: CollectionConfig = {
     adminThumbnail: 'thumbnail',
     focalPoint: true,
     disableLocalStorage: true,
-    mimeTypes: ['image/*', 'video/*', 'application/pdf'],
+    mimeTypes: ['image/*', 'video/*', 'application/pdf', 'audio/*'],
   },
   hooks: {
     beforeChange: [

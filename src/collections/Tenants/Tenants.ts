@@ -72,5 +72,21 @@ export const Tenants: CollectionConfig = {
       hasMany: false,
       required: false,
     },
+    {
+      name: 'aiContent',
+      type: 'textarea',
+      label: 'AI Content',
+      admin: {
+        description: 'The AI knowledge',
+      },
+    },
+    {
+      name: 'ordersEmail',
+      type: 'email',
+      label: 'Orders Email',
+      admin: {
+        description: 'The email address for orders',
+      },
+    },
   ],
 }

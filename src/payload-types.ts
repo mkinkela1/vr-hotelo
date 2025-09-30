@@ -177,6 +177,14 @@ export interface Tenant {
    * The whitelabel for this tenant
    */
   whitelabel?: (number | null) | Whitelabel;
+  /**
+   * The AI knowledge
+   */
+  aiContent?: string | null;
+  /**
+   * The email address for orders
+   */
+  ordersEmail?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -399,6 +407,8 @@ export interface TenantsSelect<T extends boolean = true> {
   domain?: T;
   isActive?: T;
   whitelabel?: T;
+  aiContent?: T;
+  ordersEmail?: T;
   updatedAt?: T;
   createdAt?: T;
 }
