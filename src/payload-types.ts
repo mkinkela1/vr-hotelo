@@ -185,6 +185,10 @@ export interface Tenant {
    * The email address for orders
    */
   ordersEmail?: string | null;
+  /**
+   * The expiration date of the license
+   */
+  licenseExpiration?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -409,6 +413,7 @@ export interface TenantsSelect<T extends boolean = true> {
   whitelabel?: T;
   aiContent?: T;
   ordersEmail?: T;
+  licenseExpiration?: T;
   updatedAt?: T;
   createdAt?: T;
 }

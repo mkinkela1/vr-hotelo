@@ -1,5 +1,5 @@
-import { authenticated } from '@/access/isAuthenticated'
-import { isSuperAdmin, isSuperAdminAccess } from '@/access/isSuperAdmin'
+import { authenticated, authenticatedFieldAccess } from '@/access/isAuthenticated'
+import { isSuperAdmin, isSuperAdminAccess, isSuperAdminFieldAccess } from '@/access/isSuperAdmin'
 import { updateAndDeleteAccess } from '@/collections/Tenants/access/update-and-delete-access'
 import { User } from '@/payload-types'
 import { CollectionConfig } from 'payload'
@@ -75,6 +75,7 @@ export const Tenants: CollectionConfig = {
     {
       name: 'aiContent',
       type: 'textarea',
+      localized: true,
       label: 'AI Content',
       admin: {
         description: 'The AI knowledge',
@@ -86,6 +87,20 @@ export const Tenants: CollectionConfig = {
       label: 'Orders Email',
       admin: {
         description: 'The email address for orders',
+      },
+    },
+    {
+      name: 'licenseExpiration',
+      type: 'date',
+      label: 'License Expiration',
+      admin: {
+        description: 'The expiration date of the license',
+        position: 'sidebar',
+      },
+      access: {
+        create: isSuperAdminFieldAccess,
+        update: isSuperAdminFieldAccess,
+        read: authenticatedFieldAccess,
       },
     },
   ],

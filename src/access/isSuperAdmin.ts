@@ -1,7 +1,11 @@
 import { User } from '@/payload-types'
-import { Access } from 'payload'
+import { Access, FieldAccess } from 'payload'
 
-export const isSuperAdminAccess: Access = ({ req }): boolean => {
+export const isSuperAdminAccess: Access<User> = ({ req }): boolean => {
+  return isSuperAdmin(req.user)
+}
+
+export const isSuperAdminFieldAccess: FieldAccess<User> = ({ req }): boolean => {
   return isSuperAdmin(req.user)
 }
 
