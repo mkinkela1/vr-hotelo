@@ -18,7 +18,7 @@ export const mediaReadAccess: Access = async ({ req }) => {
   const allTenantAccessIDs = [...adminTenantAccessIDs, ...viewerTenantAccessIDs]
   if (allTenantAccessIDs.length > 0) {
     return {
-      tenant_uploaded: {
+      tenant: {
         in: allTenantAccessIDs,
       },
     }

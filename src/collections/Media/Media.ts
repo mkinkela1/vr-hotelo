@@ -1,12 +1,9 @@
-import { isSuperAdmin } from '@/access/isSuperAdmin'
 import { mediaCreateAccess } from '@/collections/Media/access/create-access'
 import { mediaDeleteAccess } from '@/collections/Media/access/delete-access'
 import { mediaReadAccess } from '@/collections/Media/access/read-access'
 import { mediaUpdateAccess } from '@/collections/Media/access/update-access'
 import { customEndpointAuthorization } from '@/utils/custom-endpoint-authorization'
-import { getCollectionIDType } from '@/utils/get-collection-id-types'
 import { defaultLocale, locales } from '@/utils/locales'
-import { getTenantFromCookie } from '@payloadcms/plugin-multi-tenant/utilities'
 import type { CollectionConfig } from 'payload'
 
 export const Media: CollectionConfig = {
@@ -68,30 +65,6 @@ export const Media: CollectionConfig = {
         },
       },
     },
-    {
-      name: 'tenant_uploaded',
-      label: 'Tenant uploaded',
-      type: 'relationship',
-      relationTo: 'tenants',
-      required: true,
-      admin: {
-        description: 'The tenant that uploaded this file',
-        condition: (data, siblingData, { user }) => {
-          // Only show this field to super admins
-          return Boolean(user && isSuperAdmin(user))
-        },
-      },
-      access: {
-        read: ({ req }) => {
-          // Only super admins can read the tenant field
-          return Boolean(req?.user && isSuperAdmin(req.user))
-        },
-        update: ({ req }) => {
-          // Only super admins can update the tenant field
-          return Boolean(req?.user && isSuperAdmin(req.user))
-        },
-      },
-    },
   ],
   upload: {
     adminThumbnail: 'thumbnail',
@@ -103,15 +76,7 @@ export const Media: CollectionConfig = {
     beforeChange: [
       ({ req, data }) => {
         // Auto-assign tenant based on selected tenant in cookie
-        if (!data.tenant_uploaded && req.user) {
-          const selectedTenant = getTenantFromCookie(
-            req.headers,
-            getCollectionIDType({ payload: req.payload, collectionSlug: 'tenants' }),
-          )
-          if (selectedTenant) {
-            data.tenant_uploaded = selectedTenant
-          }
-        }
+        // The multi-tenant plugin will handle this automatically
         return data
       },
     ],
@@ -130,7 +95,7 @@ export const Media: CollectionConfig = {
         const currentTenantMedia = await req.payload.find({
           collection: 'media',
           where: {
-            tenant_uploaded: {
+            tenant: {
               equals: data?.tenant.id,
             },
           },

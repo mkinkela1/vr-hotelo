@@ -235,10 +235,6 @@ export interface Media {
    * The thumbnail of the media
    */
   thumbnail?: (number | null) | Thumbnail;
-  /**
-   * The tenant that uploaded this file
-   */
-  tenant_uploaded?: (number | null) | Tenant;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -388,7 +384,6 @@ export interface MediaSelect<T extends boolean = true> {
   is360?: T;
   locale?: T;
   thumbnail?: T;
-  tenant_uploaded?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
