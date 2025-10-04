@@ -1,4 +1,5 @@
 import { isSuperAdmin } from '@/access/isSuperAdmin'
+import { customEndpointAuthorization } from '@/utils/custom-endpoint-authorization'
 import { getCollectionIDType } from '@/utils/get-collection-id-types'
 import { getTenantFromCookie } from '@payloadcms/plugin-multi-tenant/utilities'
 import { CollectionConfig } from 'payload'
@@ -73,10 +74,12 @@ export const Thumbnails: CollectionConfig = {
       method: 'get',
       handler: async (req) => {
         const { id } = req.routeParams as { id: string }
-        const { payload, user } = req
+        const { payload } = req
 
-        if (!user) {
-          return Response.json({ error: 'Unauthorized' }, { status: 401 })
+        const { error, data, status } = await customEndpointAuthorization(req)
+
+        if (error) {
+          return Response.json({ error }, { status })
         }
 
         if (!id) {
@@ -92,7 +95,9 @@ export const Thumbnails: CollectionConfig = {
           return Response.json({ error: 'Thumbnail not found' }, { status: 404 })
         }
 
-        if (thumbnail.tenant_uploaded !== user.tenant && !isSuperAdmin(user)) {
+        const currentTenant = data?.tenant
+
+        if (thumbnail.tenant_uploaded !== currentTenant) {
           return Response.json({ error: 'Unauthorized' }, { status: 401 })
         }
 

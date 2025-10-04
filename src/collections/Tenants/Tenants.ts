@@ -2,6 +2,7 @@ import { authenticated, authenticatedFieldAccess } from '@/access/isAuthenticate
 import { isSuperAdmin, isSuperAdminAccess, isSuperAdminFieldAccess } from '@/access/isSuperAdmin'
 import { updateAndDeleteAccess } from '@/collections/Tenants/access/update-and-delete-access'
 import { User } from '@/payload-types'
+import { customEndpointAuthorization } from '@/utils/custom-endpoint-authorization'
 import { CollectionConfig } from 'payload'
 
 export const Tenants: CollectionConfig = {
@@ -101,6 +102,21 @@ export const Tenants: CollectionConfig = {
         create: isSuperAdminFieldAccess,
         update: isSuperAdminFieldAccess,
         read: authenticatedFieldAccess,
+      },
+    },
+  ],
+  endpoints: [
+    {
+      path: '/current-tenant',
+      method: 'get',
+      handler: async (req) => {
+        const { error, data, status } = await customEndpointAuthorization(req)
+
+        if (error) {
+          return Response.json({ error }, { status })
+        }
+
+        return Response.json(data?.tenant)
       },
     },
   ],

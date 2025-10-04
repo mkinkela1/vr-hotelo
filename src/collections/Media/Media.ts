@@ -3,6 +3,7 @@ import { mediaCreateAccess } from '@/collections/Media/access/create-access'
 import { mediaDeleteAccess } from '@/collections/Media/access/delete-access'
 import { mediaReadAccess } from '@/collections/Media/access/read-access'
 import { mediaUpdateAccess } from '@/collections/Media/access/update-access'
+import { customEndpointAuthorization } from '@/utils/custom-endpoint-authorization'
 import { getCollectionIDType } from '@/utils/get-collection-id-types'
 import { defaultLocale, locales } from '@/utils/locales'
 import { getTenantFromCookie } from '@payloadcms/plugin-multi-tenant/utilities'
@@ -115,4 +116,28 @@ export const Media: CollectionConfig = {
       },
     ],
   },
+  endpoints: [
+    {
+      path: 'current-tenant',
+      method: 'get',
+      handler: async (req) => {
+        const { error, data, status } = await customEndpointAuthorization(req)
+
+        if (error) {
+          return Response.json({ error }, { status })
+        }
+
+        const currentTenantMedia = await req.payload.find({
+          collection: 'media',
+          where: {
+            tenant_uploaded: {
+              equals: data?.tenant.id,
+            },
+          },
+        })
+
+        return Response.json(currentTenantMedia)
+      },
+    },
+  ],
 }
