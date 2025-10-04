@@ -83,7 +83,7 @@ export const Media: CollectionConfig = {
   },
   endpoints: [
     {
-      path: 'current-tenant',
+      path: '/current-tenant',
       method: 'get',
       handler: async (req) => {
         const { error, data, status } = await customEndpointAuthorization(req)

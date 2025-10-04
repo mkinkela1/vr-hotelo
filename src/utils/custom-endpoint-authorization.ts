@@ -20,7 +20,7 @@ export const customEndpointAuthorization = async (
 
   // 1. Check if user exists
   if (!user) {
-    return { error: 'Unauthorized', status: 401, data: undefined }
+    return { error: 'Unauthorized: User not found', status: 401, data: undefined }
   }
 
   // 2. Get tenant from cookie and check if it exists
@@ -39,7 +39,11 @@ export const customEndpointAuthorization = async (
   )
 
   if (!hasTenantViewerRole) {
-    return { error: 'Unauthorized', status: 401, data: undefined }
+    return {
+      error: 'Unauthorized: User does not have tenant-viewer role',
+      status: 401,
+      data: undefined,
+    }
   }
 
   // 4. Find tenant from user's tenant ID
