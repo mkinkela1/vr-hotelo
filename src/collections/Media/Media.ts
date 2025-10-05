@@ -4,6 +4,7 @@ import { mediaReadAccess } from '@/collections/Media/access/read-access'
 import { mediaUpdateAccess } from '@/collections/Media/access/update-access'
 import { customEndpointAuthorization } from '@/utils/custom-endpoint-authorization'
 import { defaultLocale, locales } from '@/utils/locales'
+import { sql } from '@payloadcms/db-postgres'
 import type { CollectionConfig } from 'payload'
 
 export const Media: CollectionConfig = {
@@ -92,16 +93,24 @@ export const Media: CollectionConfig = {
           return Response.json({ error }, { status })
         }
 
-        const currentTenantMedia = await req.payload.find({
-          collection: 'media',
-          where: {
-            tenant: {
-              equals: data?.tenant.id,
-            },
-          },
-        })
+        // const currentTenantMedia = await req.payload.find({
+        //   collection: 'media',
+        //   where: {
+        //     tenant: {
+        //       equals: data?.tenant.id,
+        //     },
+        //   },
+        // })
 
-        return Response.json(currentTenantMedia)
+        const result = await req.payload.db.drizzle.execute(
+          sql`
+            SELECT * FROM media
+            WHERE tenant_id = ${data?.tenant.id}
+            ORDER BY created_at DESC
+          `,
+        )
+
+        return Response.json({ docs: result })
       },
     },
   ],
