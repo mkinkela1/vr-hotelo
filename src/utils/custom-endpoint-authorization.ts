@@ -15,6 +15,7 @@ type CustomEndpointAuthorizationResponse = {
 
 export const customEndpointAuthorization = async (
   req: PayloadRequest,
+  tenantViewerOnly = true,
 ): Promise<CustomEndpointAuthorizationResponse> => {
   const { payload, user } = req
 
@@ -31,16 +32,18 @@ export const customEndpointAuthorization = async (
   }
 
   // 3. Check if user has tenant-viewer role for this tenant
-  const hasTenantViewerRole = user.tenants?.some(
-    (tenant) =>
-      extractID(tenant.tenant) === tenantFromRequest && tenant.roles.includes('tenant-viewer'),
-  )
+  if (tenantViewerOnly) {
+    const hasTenantViewerRole = user.tenants?.some(
+      (tenant) =>
+        extractID(tenant.tenant) === tenantFromRequest && tenant.roles.includes('tenant-viewer'),
+    )
 
-  if (!hasTenantViewerRole) {
-    return {
-      error: 'Unauthorized: User does not have tenant-viewer role',
-      status: 401,
-      data: undefined,
+    if (!hasTenantViewerRole) {
+      return {
+        error: 'Unauthorized: User does not have tenant-viewer role',
+        status: 401,
+        data: undefined,
+      }
     }
   }
 

@@ -38,7 +38,7 @@ export const Thumbnails: CollectionConfig = {
         const { id } = req.routeParams as { id: string }
         const { payload } = req
 
-        const { error, data, status } = await customEndpointAuthorization(req)
+        const { error, data, status } = await customEndpointAuthorization(req, false)
 
         if (error) {
           return Response.json({ error }, { status })
