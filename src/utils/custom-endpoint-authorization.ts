@@ -56,7 +56,11 @@ export const customEndpointAuthorization = async (
 
   // 5. Check if tenant from request matches tenant from user
   if (tenantFromRequest !== tenantFromUser.id) {
-    return { error: 'Tenant mismatch', status: 403, data: undefined }
+    return {
+      error: `Tenant mismatch: ${tenantFromRequest} !== ${tenantFromUser.id}`,
+      status: 403,
+      data: undefined,
+    }
   }
 
   // 6. Check if tenant license has not expired
