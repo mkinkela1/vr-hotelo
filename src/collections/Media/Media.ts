@@ -95,7 +95,7 @@ export const Media: CollectionConfig = {
         })
 
         const response = currentTenantMedia.docs.map((media) => {
-          const thumbnailData = media.thumbnail as Thumbnail
+          const thumbnailData = media?.thumbnail as Thumbnail | null
 
           return {
             id: media.id,
@@ -103,19 +103,21 @@ export const Media: CollectionConfig = {
             caption: media.caption,
             is360: media.is360,
             locale: media.locale,
-            thumbnail: {
-              id: thumbnailData.id,
-              createdAt: thumbnailData.createdAt,
-              updatedAt: thumbnailData.updatedAt,
-              url: thumbnailData.url,
-              filename: thumbnailData.filename,
-              mimeType: thumbnailData.mimeType,
-              filesize: thumbnailData.filesize,
-              width: thumbnailData.width,
-              height: thumbnailData.height,
-              focalX: thumbnailData.focalX,
-              focalY: thumbnailData.focalY,
-            },
+            thumbnail: thumbnailData
+              ? {
+                  id: thumbnailData.id,
+                  createdAt: thumbnailData.createdAt,
+                  updatedAt: thumbnailData.updatedAt,
+                  url: thumbnailData.url,
+                  filename: thumbnailData.filename,
+                  mimeType: thumbnailData.mimeType,
+                  filesize: thumbnailData.filesize,
+                  width: thumbnailData.width,
+                  height: thumbnailData.height,
+                  focalX: thumbnailData.focalX,
+                  focalY: thumbnailData.focalY,
+                }
+              : null,
             filename: media.filename,
             createdAt: media.createdAt,
             updatedAt: media.updatedAt,
