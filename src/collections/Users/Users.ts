@@ -6,9 +6,8 @@ import { readAccess } from '@/collections/Users/access/read-access'
 import { updateAccess } from '@/collections/Users/access/update-access'
 import { setCookieBasedOnDomain } from '@/collections/Users/hooks/setCookieBasedOnDomain'
 import { validateTenantAccess } from '@/collections/Users/hooks/validate-tenant-access'
-import config from '@payload-config'
 import { tenantsArrayField } from '@payloadcms/plugin-multi-tenant/fields'
-import { extractJWT, getPayload, type CollectionConfig } from 'payload'
+import { extractJWT, type CollectionConfig } from 'payload'
 import { extractID } from 'payload/shared'
 
 const defaultTenantArrayField = tenantsArrayField({
@@ -40,8 +39,7 @@ export const Users: CollectionConfig = {
     strategies: [
       {
         name: 'bearer-token',
-        authenticate: async ({ headers }) => {
-          const payload = await getPayload({ config })
+        authenticate: async ({ headers, payload }) => {
           const decoded = extractJWT({ headers, payload })
           if (!decoded) {
             return { user: null }

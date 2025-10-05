@@ -47,7 +47,7 @@ export const customEndpointAuthorization = async (
   // 4. Find tenant from user's tenant ID
   const tenantFromUser = await payload.findByID({
     collection: 'tenants',
-    id: user.tenant as number,
+    id: extractID(user.tenant as Tenant) as number,
   })
 
   if (!tenantFromUser) {
