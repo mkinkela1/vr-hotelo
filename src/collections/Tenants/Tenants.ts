@@ -150,7 +150,6 @@ export const Tenants: CollectionConfig = {
           slug: tenantData.slug,
           domain: tenantData.domain,
           isActive: tenantData.isActive,
-          whitelabel: tenantData.whitelabel,
           aiContent: tenantData.aiContent,
           ordersEmail: tenantData.ordersEmail,
           licenseExpiration: tenantData.licenseExpiration,
