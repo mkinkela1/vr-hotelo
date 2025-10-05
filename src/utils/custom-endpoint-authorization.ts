@@ -30,7 +30,7 @@ export const customEndpointAuthorization = async (
   )
 
   if (!tenantFromCookie) {
-    return { error: 'Tenant not found', status: 404, data: undefined }
+    return { error: 'Tenant not found: No tenant found in cookie', status: 404, data: undefined }
   }
 
   // 3. Check if user has tenant-viewer role for this tenant
@@ -53,7 +53,7 @@ export const customEndpointAuthorization = async (
   })
 
   if (!tenantFromUser) {
-    return { error: 'Tenant not found', status: 404, data: undefined }
+    return { error: 'Tenant not found: No tenant found in user', status: 404, data: undefined }
   }
 
   // 5. Check if tenant from cookie matches tenant from user
