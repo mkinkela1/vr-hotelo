@@ -92,7 +92,7 @@ export interface Config {
   };
   globals: {};
   globalsSelect: {};
-  locale: 'hr' | 'en' | 'fr' | 'de' | 'it';
+  locale: null;
   user: User & {
     collection: 'users';
   };
@@ -178,9 +178,15 @@ export interface Tenant {
    */
   whitelabel?: (number | null) | Whitelabel;
   /**
-   * The AI knowledge
+   * The AI knowledge for each language
    */
-  aiContent?: string | null;
+  aiContent?: {
+    hr?: string | null;
+    en?: string | null;
+    fr?: string | null;
+    de?: string | null;
+    it?: string | null;
+  };
   /**
    * The email address for orders
    */
@@ -198,10 +204,7 @@ export interface Tenant {
  */
 export interface Whitelabel {
   id: number;
-  /**
-   * The tenant this whitelabel belongs to
-   */
-  tenant: number | Tenant;
+  tenant?: (number | null) | Tenant;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -253,14 +256,11 @@ export interface Media {
  */
 export interface Thumbnail {
   id: number;
+  tenant?: (number | null) | Tenant;
   /**
    * The title of the thumbnail
    */
   title?: string | null;
-  /**
-   * The tenant that uploaded this file
-   */
-  tenant_uploaded?: (number | null) | Tenant;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -406,7 +406,15 @@ export interface TenantsSelect<T extends boolean = true> {
   domain?: T;
   isActive?: T;
   whitelabel?: T;
-  aiContent?: T;
+  aiContent?:
+    | T
+    | {
+        hr?: T;
+        en?: T;
+        fr?: T;
+        de?: T;
+        it?: T;
+      };
   ordersEmail?: T;
   licenseExpiration?: T;
   updatedAt?: T;
@@ -435,8 +443,8 @@ export interface WhitelabelsSelect<T extends boolean = true> {
  * via the `definition` "thumbnails_select".
  */
 export interface ThumbnailsSelect<T extends boolean = true> {
+  tenant?: T;
   title?: T;
-  tenant_uploaded?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;

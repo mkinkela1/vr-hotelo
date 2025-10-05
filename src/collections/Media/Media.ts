@@ -93,7 +93,7 @@ export const Media: CollectionConfig = {
           pagination: false,
         })
 
-        return Response.json(currentTenantMedia)
+        return Response.json(currentTenantMedia.docs)
       },
     },
   ],

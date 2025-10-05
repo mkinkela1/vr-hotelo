@@ -43,18 +43,7 @@ export const Whitelabels: CollectionConfig = {
     update: whitelabelsUpdateAccess,
     delete: whitelabelsDeleteAccess,
   },
-  fields: [
-    {
-      name: 'tenant',
-      type: 'relationship',
-      relationTo: 'tenants',
-      required: true,
-      label: 'Tenant',
-      admin: {
-        description: 'The tenant this whitelabel belongs to',
-      },
-    },
-  ],
+  fields: [],
   upload: {
     adminThumbnail: 'thumbnail',
     focalPoint: true,

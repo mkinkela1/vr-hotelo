@@ -12,6 +12,12 @@ export const multiTenantPlugin = multiTenantPluginBase<Config>({
       useTenantAccess: true,
       useBaseListFilter: false, // Disable this to prevent delete operation issues
     },
+    whitelabels: {
+      useTenantAccess: true,
+    },
+    thumbnails: {
+      useTenantAccess: true,
+    },
   },
   tenantField: {
     access: {

@@ -1,7 +1,6 @@
-import { isSuperAdmin } from '@/access/isSuperAdmin'
+import { Tenant } from '@/payload-types'
 import { customEndpointAuthorization } from '@/utils/custom-endpoint-authorization'
-import { getCollectionIDType } from '@/utils/get-collection-id-types'
-import { getTenantFromCookie } from '@payloadcms/plugin-multi-tenant/utilities'
+import { extractID } from '@/utils/extract-id'
 import { CollectionConfig } from 'payload'
 
 export const Thumbnails: CollectionConfig = {
@@ -21,27 +20,6 @@ export const Thumbnails: CollectionConfig = {
         description: 'The title of the thumbnail',
       },
     },
-    {
-      name: 'tenant_uploaded',
-      label: 'Tenant uploaded',
-      type: 'relationship',
-      relationTo: 'tenants',
-      required: true,
-      admin: {
-        description: 'The tenant that uploaded this file',
-        condition: (data, siblingData, { user }) => {
-          return Boolean(user && isSuperAdmin(user))
-        },
-      },
-      access: {
-        read: ({ req }) => {
-          return Boolean(req?.user && isSuperAdmin(req.user))
-        },
-        update: ({ req }) => {
-          return Boolean(req?.user && isSuperAdmin(req.user))
-        },
-      },
-    },
   ],
   upload: {
     adminThumbnail: 'thumbnail',
@@ -51,22 +29,6 @@ export const Thumbnails: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
-  },
-  hooks: {
-    beforeChange: [
-      ({ req, data }) => {
-        if (!data.tenant_uploaded && req.user) {
-          const selectedTenant = getTenantFromCookie(
-            req.headers,
-            getCollectionIDType({ payload: req.payload, collectionSlug: 'tenants' }),
-          )
-          if (selectedTenant) {
-            data.tenant_uploaded = selectedTenant
-          }
-        }
-        return data
-      },
-    ],
   },
   endpoints: [
     {
@@ -95,9 +57,10 @@ export const Thumbnails: CollectionConfig = {
           return Response.json({ error: 'Thumbnail not found' }, { status: 404 })
         }
 
-        const currentTenant = data?.tenant
+        const thumbnailTenant = extractID(thumbnail.tenant as Tenant)
+        const currentTenantID = extractID(data?.tenant as Tenant)
 
-        if (thumbnail.tenant_uploaded !== currentTenant) {
+        if (thumbnailTenant !== currentTenantID) {
           return Response.json({ error: 'Unauthorized' }, { status: 401 })
         }
 

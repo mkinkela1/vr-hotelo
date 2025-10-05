@@ -3,6 +3,7 @@ import * as migration_20250928_174840_localization from './20250928_174840_local
 import * as migration_20250930_104724_orders_email_and_ai_content from './20250930_104724_orders_email_and_ai_content';
 import * as migration_20251004_204241_localization_ai_content from './20251004_204241_localization_ai_content';
 import * as migration_20251004_210220_remove_tenant_uploaded from './20251004_210220_remove_tenant_uploaded';
+import * as migration_20251005_191009_one_ai_content_per_lang from './20251005_191009_one_ai_content_per_lang';
 
 export const migrations = [
   {
@@ -28,6 +29,11 @@ export const migrations = [
   {
     up: migration_20251004_210220_remove_tenant_uploaded.up,
     down: migration_20251004_210220_remove_tenant_uploaded.down,
-    name: '20251004_210220_remove_tenant_uploaded'
+    name: '20251004_210220_remove_tenant_uploaded',
+  },
+  {
+    up: migration_20251005_191009_one_ai_content_per_lang.up,
+    down: migration_20251005_191009_one_ai_content_per_lang.down,
+    name: '20251005_191009_one_ai_content_per_lang'
   },
 ];

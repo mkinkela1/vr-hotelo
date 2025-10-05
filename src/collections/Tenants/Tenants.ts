@@ -75,12 +75,38 @@ export const Tenants: CollectionConfig = {
     },
     {
       name: 'aiContent',
-      type: 'textarea',
-      localized: true,
+      type: 'group',
       label: 'AI Content',
       admin: {
-        description: 'The AI knowledge',
+        description: 'The AI knowledge for each language',
       },
+      fields: [
+        {
+          name: 'hr',
+          type: 'textarea',
+          label: 'Hrvatski',
+        },
+        {
+          name: 'en',
+          type: 'textarea',
+          label: 'English',
+        },
+        {
+          name: 'fr',
+          type: 'textarea',
+          label: 'French',
+        },
+        {
+          name: 'de',
+          type: 'textarea',
+          label: 'German',
+        },
+        {
+          name: 'it',
+          type: 'textarea',
+          label: 'Italian',
+        },
+      ],
     },
     {
       name: 'ordersEmail',
