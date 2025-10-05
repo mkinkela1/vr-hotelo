@@ -1,7 +1,7 @@
 import { authenticated, authenticatedFieldAccess } from '@/access/isAuthenticated'
 import { isSuperAdmin, isSuperAdminAccess, isSuperAdminFieldAccess } from '@/access/isSuperAdmin'
 import { updateAndDeleteAccess } from '@/collections/Tenants/access/update-and-delete-access'
-import { User } from '@/payload-types'
+import { Tenant, User } from '@/payload-types'
 import { customEndpointAuthorization } from '@/utils/custom-endpoint-authorization'
 import { CollectionConfig } from 'payload'
 
@@ -142,7 +142,21 @@ export const Tenants: CollectionConfig = {
           return Response.json({ error }, { status })
         }
 
-        return Response.json(data?.tenant)
+        const tenantData = data?.tenant as Tenant
+
+        return Response.json({
+          id: tenantData.id,
+          name: tenantData.name,
+          slug: tenantData.slug,
+          domain: tenantData.domain,
+          isActive: tenantData.isActive,
+          whitelabel: tenantData.whitelabel,
+          aiContent: tenantData.aiContent,
+          ordersEmail: tenantData.ordersEmail,
+          licenseExpiration: tenantData.licenseExpiration,
+          updatedAt: tenantData.updatedAt,
+          createdAt: tenantData.createdAt,
+        })
       },
     },
   ],

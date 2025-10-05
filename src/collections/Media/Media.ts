@@ -2,6 +2,7 @@ import { mediaCreateAccess } from '@/collections/Media/access/create-access'
 import { mediaDeleteAccess } from '@/collections/Media/access/delete-access'
 import { mediaReadAccess } from '@/collections/Media/access/read-access'
 import { mediaUpdateAccess } from '@/collections/Media/access/update-access'
+import { Thumbnail } from '@/payload-types'
 import { customEndpointAuthorization } from '@/utils/custom-endpoint-authorization'
 import { defaultLocale, locales } from '@/utils/locales'
 import type { CollectionConfig } from 'payload'
@@ -93,7 +94,42 @@ export const Media: CollectionConfig = {
           pagination: false,
         })
 
-        return Response.json(currentTenantMedia.docs)
+        const response = currentTenantMedia.docs.map((media) => {
+          const thumbnailData = media.thumbnail as Thumbnail
+
+          return {
+            id: media.id,
+            alt: media.alt,
+            caption: media.caption,
+            is360: media.is360,
+            locale: media.locale,
+            thumbnail: {
+              id: thumbnailData.id,
+              createdAt: thumbnailData.createdAt,
+              updatedAt: thumbnailData.updatedAt,
+              url: thumbnailData.url,
+              filename: thumbnailData.filename,
+              mimeType: thumbnailData.mimeType,
+              filesize: thumbnailData.filesize,
+              width: thumbnailData.width,
+              height: thumbnailData.height,
+              focalX: thumbnailData.focalX,
+              focalY: thumbnailData.focalY,
+            },
+            filename: media.filename,
+            createdAt: media.createdAt,
+            updatedAt: media.updatedAt,
+            url: media.url,
+            mimeType: media.mimeType,
+            filesize: media.filesize,
+            width: media.width,
+            height: media.height,
+            focalX: media.focalX,
+            focalY: media.focalY,
+          }
+        })
+
+        return Response.json(response)
       },
     },
   ],
