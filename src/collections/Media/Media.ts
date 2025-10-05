@@ -72,15 +72,6 @@ export const Media: CollectionConfig = {
     disableLocalStorage: true,
     mimeTypes: ['image/*', 'video/*', 'application/pdf', 'audio/*'],
   },
-  hooks: {
-    beforeChange: [
-      ({ req, data }) => {
-        // Auto-assign tenant based on selected tenant in cookie
-        // The multi-tenant plugin will handle this automatically
-        return data
-      },
-    ],
-  },
   endpoints: [
     {
       path: '/current-tenant',
@@ -99,6 +90,7 @@ export const Media: CollectionConfig = {
               equals: data?.tenant.id,
             },
           },
+          pagination: false,
         })
 
         return Response.json({ docs: currentTenantMedia })
