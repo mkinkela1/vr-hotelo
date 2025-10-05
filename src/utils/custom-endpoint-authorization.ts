@@ -1,6 +1,6 @@
 import { User } from '@/payload-types'
-import { getCollectionIDType } from '@/utils/get-collection-id-types'
-import { getTenantFromCookie } from '@payloadcms/plugin-multi-tenant/utilities'
+import { extractID } from '@/utils/extract-id'
+import { getTenantFromRequest } from '@/utils/get-tenant-from-request'
 import { PayloadRequest } from 'payload'
 import { Tenant } from '../payload-types'
 
@@ -23,19 +23,17 @@ export const customEndpointAuthorization = async (
     return { error: 'Unauthorized: User not found', status: 401, data: undefined }
   }
 
-  // 2. Get tenant from cookie and check if it exists
-  const tenantFromCookie = getTenantFromCookie(
-    req.headers,
-    getCollectionIDType({ payload, collectionSlug: 'tenants' }),
-  )
+  // 2. Get tenant from request
+  const tenantFromRequest = await getTenantFromRequest()
 
-  if (!tenantFromCookie) {
-    return { error: 'Tenant not found: No tenant found in cookie', status: 404, data: undefined }
+  if (!tenantFromRequest) {
+    return { error: 'Tenant not found: No tenant found in request', status: 404, data: undefined }
   }
 
   // 3. Check if user has tenant-viewer role for this tenant
   const hasTenantViewerRole = user.tenants?.some(
-    (tenant) => tenant.tenant === tenantFromCookie && tenant.roles.includes('tenant-viewer'),
+    (tenant) =>
+      extractID(tenant.tenant) === tenantFromRequest && tenant.roles.includes('tenant-viewer'),
   )
 
   if (!hasTenantViewerRole) {
@@ -56,8 +54,8 @@ export const customEndpointAuthorization = async (
     return { error: 'Tenant not found: No tenant found in user', status: 404, data: undefined }
   }
 
-  // 5. Check if tenant from cookie matches tenant from user
-  if (tenantFromCookie !== tenantFromUser.id) {
+  // 5. Check if tenant from request matches tenant from user
+  if (tenantFromRequest !== tenantFromUser.id) {
     return { error: 'Tenant mismatch', status: 403, data: undefined }
   }
 
