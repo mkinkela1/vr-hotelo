@@ -27,29 +27,28 @@ export const s3Plugin = s3Storage({
     region: process.env.S3_REGION,
     endpoint: process.env.S3_ENDPOINT,
     // Aggressive retry configuration for network and DNS issues
-    maxAttempts: 10, // Increased from 5 to 10 for DNS issues
-    retryMode: 'adaptive', // Adaptive retry mode handles transient errors better
+    maxAttempts: 10,
+    retryMode: 'adaptive',
     // Custom request handler with optimized settings for large files
     requestHandler: new NodeHttpHandler({
-      requestTimeout: 1800000, // 30 minutes for large file uploads
-      connectionTimeout: 120000, // Increased to 120 seconds for DNS resolution
+      requestTimeout: 3600000, // INCREASED: 60 minutes for 3GB+ files
+      connectionTimeout: 180000, // INCREASED: 3 minutes for DNS resolution
       // Configure HTTPS agent with keepalive for stable connections
       httpsAgent: new https.Agent({
         keepAlive: true,
-        keepAliveMsecs: 30000, // Send keepalive packets every 30 seconds
-        maxSockets: 50, // Allow up to 50 concurrent connections
-        timeout: 120000, // Increased socket timeout to 120 seconds
+        keepAliveMsecs: 15000, // DECREASED: Send keepalive packets every 15 seconds (more frequent)
+        maxSockets: 50,
+        timeout: 3600000, // INCREASED: 60 minutes socket timeout
         // DNS lookup settings
         lookup: (hostname, options, callback) => {
           // Custom DNS lookup with retry logic
           const doLookup = (attemptNum: number) => {
             dns.lookup(hostname, options, (err, address, family) => {
               if (err && attemptNum < 3) {
-                // Retry DNS lookup up to 3 times with delay
                 console.log(
                   `DNS lookup failed for ${hostname}, attempt ${attemptNum + 1}/3, retrying...`,
                 )
-                setTimeout(() => doLookup(attemptNum + 1), 1000 * attemptNum) // Exponential backoff
+                setTimeout(() => doLookup(attemptNum + 1), 1000 * attemptNum)
               } else {
                 callback(err, address, family)
               }
@@ -60,7 +59,5 @@ export const s3Plugin = s3Storage({
       }),
     }),
   },
-  // Configure multipart upload for files larger than 100MB
-  // This splits large files into manageable chunks
-  acl: 'private', // or 'public-read' depending on your needs
+  acl: 'private',
 })
