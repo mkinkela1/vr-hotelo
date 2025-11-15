@@ -16,21 +16,33 @@ When uploading large files (3+ GB), the following errors were occurring:
 
 The S3 plugin has been enhanced with:
 
-#### a. Retry Logic
-- **maxAttempts: 5** - Automatically retries failed requests up to 5 times
+#### a. DNS Configuration (Critical Fix)
+
+- **Custom DNS servers**: Cloudflare (1.1.1.1, 1.0.0.1) and Google (8.8.8.8, 8.8.4.4)
+- **DNS retry logic**: Automatically retries DNS lookups up to 3 times with exponential backoff
+- **IPv4 priority**: Prefers IPv4 addresses for better compatibility
+
+#### b. Retry Logic
+
+- **maxAttempts: 10** - Increased from 5 to 10 for DNS and network issues
+- **retryMode: 'adaptive'** - AWS SDK adaptive mode handles transient errors intelligently
 - Handles transient network errors like DNS resolution failures
 
-#### b. Extended Timeouts
-- **requestTimeout: 1,800,000ms (30 minutes)** - Allows large files to complete upload
-- **connectionTimeout: 60,000ms (60 seconds)** - More time for initial connection
+#### c. Extended Timeouts
 
-#### c. HTTP Connection Management
+- **requestTimeout: 1,800,000ms (30 minutes)** - Allows large files to complete upload
+- **connectionTimeout: 120,000ms (2 minutes)** - Extended for DNS resolution and initial connection
+
+#### d. HTTP Connection Management
+
 - **keepAlive: true** - Maintains persistent connections
 - **keepAliveMsecs: 30,000ms** - Sends keepalive packets every 30 seconds
 - **maxSockets: 50** - Allows up to 50 concurrent connections
+- **timeout: 120,000ms** - Extended socket timeout
 
-#### d. Custom HTTP Handler
-Uses `@smithy/node-http-handler` with optimized HTTPS agent for stable, long-running uploads.
+#### e. Custom HTTP Handler
+
+Uses `@smithy/node-http-handler` with optimized HTTPS agent and custom DNS lookup function for stable, long-running uploads.
 
 ### 2. Next.js Configuration (`next.config.mjs`)
 
@@ -56,15 +68,38 @@ export const maxDuration = 300 // 5 minutes function timeout
 
 This prevents the API route from timing out during large uploads.
 
-### 4. Package Dependencies
+### 4. Docker Configuration (`docker-compose.yml`)
+
+Added DNS server configuration to ensure reliable DNS resolution:
+
+```yaml
+dns:
+  - 1.1.1.1 # Cloudflare DNS (primary)
+  - 1.0.0.1 # Cloudflare DNS (secondary)
+  - 8.8.8.8 # Google DNS (fallback)
+  - 8.8.4.4 # Google DNS (fallback)
+```
+
+Also configured:
+
+- Memory limits (4GB)
+- File descriptor limits (65536)
+- Bridge network mode for better connectivity
+
+### 5. Package Dependencies
 
 Installed `@smithy/node-http-handler` for optimized HTTP handling with AWS SDK v3.
+
+### 6. DNS Troubleshooting Script (`test-dns.sh`)
+
+Created a diagnostic script to test DNS resolution and R2 connectivity.
 
 ## How It Works
 
 ### Multipart Upload
 
 The AWS SDK automatically uses **multipart upload** for large files:
+
 - Files are split into smaller chunks (default: 5MB per part)
 - Each part is uploaded independently
 - Parts can be retried individually if they fail
@@ -73,6 +108,7 @@ The AWS SDK automatically uses **multipart upload** for large files:
 ### Connection Stability
 
 The HTTP keepalive configuration ensures:
+
 - Connections stay alive during long uploads
 - Reduces connection establishment overhead
 - Prevents connection resets during idle periods
@@ -80,16 +116,48 @@ The HTTP keepalive configuration ensures:
 ### Error Recovery
 
 With retry logic:
+
 - Transient DNS failures are automatically retried
 - Network hiccups don't cause complete upload failure
 - Exponential backoff prevents overwhelming the server
 
 ## Testing Large File Uploads
 
+### Step 1: Test DNS Resolution (Important!)
+
+Before uploading, test that DNS resolution is working:
+
+```bash
+# Run the DNS troubleshooting script
+./test-dns.sh
+
+# Or test inside the Docker container
+docker-compose exec payload sh -c 'nslookup vr-hotelo-5f7ad06b-a5ff-4924-835b-5e964a9beb0b.643af51677eb9db5c70ccc5452aa4400.r2.cloudflarestorage.com'
+```
+
+All DNS tests should pass. If they fail, check your network connectivity.
+
+### Step 2: Restart Docker with New Configuration
+
+**IMPORTANT**: You must restart Docker Compose to apply the new DNS settings:
+
+```bash
+# Stop and remove containers
+docker-compose down
+
+# Rebuild and start with new configuration
+docker-compose up --build
+```
+
+### Step 3: Upload Test
+
 1. **Start the development server:**
-   ```bash
-   pnpm dev
-   ```
+
+```bash
+pnpm dev
+# Or if using Docker:
+docker-compose up
+```
 
 2. **Upload a large file (3+ GB) through the Payload admin interface:**
    - Navigate to Media collection
@@ -98,21 +166,26 @@ With retry logic:
    - Monitor the upload progress
 
 3. **Watch the logs for:**
-   - No DNS resolution errors
-   - No connection timeouts
-   - Successful multipart upload completion
+   - ✅ DNS lookup success messages (if DNS failed before)
+   - ✅ No `EAI_AGAIN` DNS resolution errors
+   - ✅ No connection timeouts
+   - ✅ Successful multipart upload completion
+   - ✅ Retry attempts increasing (should see attempts > 1 if there are transient issues)
 
 ## Best Practices
 
 ### For Files 100MB - 1GB
+
 - Default settings work well
 - Uploads typically complete in 1-5 minutes
 
 ### For Files 1GB - 3GB
+
 - Allow 5-15 minutes for upload
 - Monitor network stability
 
 ### For Files 3GB+
+
 - Allow 15-30 minutes for upload
 - Ensure stable network connection
 - Consider uploading during off-peak hours
@@ -138,21 +211,61 @@ You can monitor uploads in several ways:
 
 ### DNS Resolution Errors Still Occurring
 
-If you still see `EAI_AGAIN` errors:
+If you still see `EAI_AGAIN` errors after applying the fixes:
 
-1. **Check DNS configuration:**
+1. **CRITICAL: Restart Docker Compose**
+
+   The DNS configuration will NOT take effect until you restart:
+
    ```bash
-   nslookup vr-hotelo-5f7ad06b-a5ff-4924-835b-5e964a9beb0b.643af51677eb9db5c70ccc5452aa4400.r2.cloudflarestorage.com
+   docker-compose down
+   docker-compose up
    ```
 
-2. **Verify network stability:**
-   - Use a wired connection instead of WiFi
-   - Check for firewall/proxy issues
+2. **Run the DNS diagnostic script:**
 
-3. **Increase retry attempts:**
-   In `src/plugins/s3.plugin.ts`, increase `maxAttempts` to 10:
+   ```bash
+   ./test-dns.sh
+   ```
+
+   This will test:
+   - System DNS resolution
+   - Cloudflare DNS (1.1.1.1)
+   - Google DNS (8.8.8.8)
+   - HTTPS connectivity to R2
+   - Docker DNS configuration
+
+3. **Test DNS from inside Docker container:**
+
+   ```bash
+   docker-compose exec payload sh -c 'cat /etc/resolv.conf'
+   docker-compose exec payload sh -c 'nslookup vr-hotelo-5f7ad06b-a5ff-4924-835b-5e964a9beb0b.643af51677eb9db5c70ccc5452aa4400.r2.cloudflarestorage.com'
+   ```
+
+4. **Verify network stability:**
+   - Use a wired connection instead of WiFi if possible
+   - Check for firewall/proxy issues
+   - Ensure Docker has internet access
+   - Try disabling VPN if connected
+
+5. **Check Docker daemon DNS:**
+
+   Edit Docker daemon config (`/etc/docker/daemon.json` on Linux, Docker Desktop settings on Mac/Windows):
+
+   ```json
+   {
+     "dns": ["1.1.1.1", "8.8.8.8"]
+   }
+   ```
+
+   Then restart Docker daemon.
+
+6. **Last resort - Increase retry attempts:**
+
+   Already set to 10, but can be increased further in `src/plugins/s3.plugin.ts`:
+
    ```typescript
-   maxAttempts: 10,
+   maxAttempts: 15,
    ```
 
 ### Connection Timeouts
@@ -161,6 +274,7 @@ If uploads still timeout:
 
 1. **Increase request timeout:**
    In `src/plugins/s3.plugin.ts`, increase to 60 minutes:
+
    ```typescript
    requestTimeout: 3600000, // 60 minutes
    ```
@@ -180,6 +294,7 @@ For very large files:
 
 1. **Increase Node.js memory:**
    Already configured in package.json scripts:
+
    ```json
    "build": "cross-env NODE_OPTIONS=\"--max-old-space-size=8000\" next build"
    ```
@@ -242,6 +357,7 @@ S3_SECRET_ACCESS_KEY=your-secret-key
 
 2. **File type validation:**
    - Already configured in Media collection:
+
    ```typescript
    mimeTypes: ['image/*', 'video/*', 'application/pdf', 'audio/*']
    ```
@@ -255,13 +371,13 @@ S3_SECRET_ACCESS_KEY=your-secret-key
 Expected upload times (with stable 100 Mbps connection):
 
 | File Size | Expected Time | Actual Time May Vary |
-|-----------|---------------|---------------------|
-| 1 GB      | ~2 minutes    | ±30 seconds         |
-| 2 GB      | ~4 minutes    | ±1 minute           |
-| 3 GB      | ~6 minutes    | ±2 minutes          |
-| 5 GB      | ~10 minutes   | ±3 minutes          |
+| --------- | ------------- | -------------------- |
+| 1 GB      | ~2 minutes    | ±30 seconds          |
+| 2 GB      | ~4 minutes    | ±1 minute            |
+| 3 GB      | ~6 minutes    | ±2 minutes           |
+| 5 GB      | ~10 minutes   | ±3 minutes           |
 
-*Note: Actual times depend on network speed, server load, and R2 performance.*
+_Note: Actual times depend on network speed, server load, and R2 performance._
 
 ## Support
 
@@ -274,12 +390,27 @@ If you continue experiencing issues:
 
 ## Changelog
 
-### 2025-11-15
-- ✅ Added retry logic (5 attempts)
-- ✅ Increased timeouts (30 minutes request, 60 seconds connection)
+### 2025-11-15 (Updated - DNS Fix)
+
+**Critical DNS Resolution Fixes:**
+
+- ✅ Configured custom DNS servers (Cloudflare 1.1.1.1, Google 8.8.8.8) in Docker
+- ✅ Added custom DNS retry logic with exponential backoff (3 attempts per lookup)
+- ✅ Set IPv4 priority for DNS resolution
+- ✅ Increased retry attempts to 10 (was 5)
+- ✅ Changed retry mode to 'adaptive' for better error handling
+- ✅ Extended connection timeout to 120 seconds (was 60)
+- ✅ Extended socket timeout to 120 seconds (was 60)
+- ✅ Created DNS troubleshooting script (test-dns.sh)
+
+**Original Fixes:**
+
+- ✅ Added retry logic (now 10 attempts, was 5)
+- ✅ Increased timeouts (30 minutes request, 120 seconds connection)
 - ✅ Configured HTTP keepalive
 - ✅ Added Next.js body size limit (5GB)
 - ✅ Installed @smithy/node-http-handler
-- ✅ Extended API route duration (5 minutes)
+- ✅ Extended API route duration (30 minutes)
 - ✅ Enabled multipart upload support
-
+- ✅ Added Docker memory limits (4GB)
+- ✅ Increased file descriptor limits (65536)
