@@ -11,6 +11,9 @@ import {
   REST_PUT,
 } from '@payloadcms/next/routes'
 
+// Configure route to handle large file uploads
+export const maxDuration = 1800 //30 minutes
+
 export const GET = REST_GET(config)
 export const POST = REST_POST(config)
 export const DELETE = REST_DELETE(config)

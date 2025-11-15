@@ -32,6 +32,9 @@ importers:
       '@payloadcms/ui':
         specifier: 3.57.0
         version: 3.57.0(@types/react@19.1.0)(monaco-editor@0.53.0)(next@15.3.2(@babel/core@7.28.4)(@playwright/test@1.50.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(sass@1.77.4))(payload@3.57.0(graphql@16.11.0)(typescript@5.7.3))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(typescript@5.7.3)
+      '@smithy/node-http-handler':
+        specifier: ^4.4.5
+        version: 4.4.5
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -1530,6 +1533,10 @@ packages:
     resolution: {integrity: sha512-vkzula+IwRvPR6oKQhMYioM3A/oX/lFCZiwuxkQbRhqJS2S4YRY2k7k/SyR2jMf3607HLtbEwlRxi0ndXHMjRg==}
     engines: {node: '>=18.0.0'}
 
+  '@smithy/abort-controller@4.2.5':
+    resolution: {integrity: sha512-j7HwVkBw68YW8UmFRcjZOmssE77Rvk0GWAIN1oFBhsaovQmZWYCIcGa9/pwRB0ExI8Sk9MWNALTjftjHZea7VA==}
+    engines: {node: '>=18.0.0'}
+
   '@smithy/chunked-blob-reader-native@4.1.0':
     resolution: {integrity: sha512-Bnv0B3nSlfB2mPO0WgM49I/prl7+kamF042rrf3ezJ3Z4C7csPYvyYgZfXTGXwXfj1mAwDWjE/ybIf49PzFzvA==}
     engines: {node: '>=18.0.0'}
@@ -1626,8 +1633,8 @@ packages:
     resolution: {integrity: sha512-SYGTKyPvyCfEzIN5rD8q/bYaOPZprYUPD2f5g9M7OjaYupWOoQFYJ5ho+0wvxIRf471i2SR4GoiZ2r94Jq9h6A==}
     engines: {node: '>=18.0.0'}
 
-  '@smithy/node-http-handler@4.2.1':
-    resolution: {integrity: sha512-REyybygHlxo3TJICPF89N2pMQSf+p+tBJqpVe1+77Cfi9HBPReNjTgtZ1Vg73exq24vkqJskKDpfF74reXjxfw==}
+  '@smithy/node-http-handler@4.4.5':
+    resolution: {integrity: sha512-CMnzM9R2WqlqXQGtIlsHMEZfXKJVTIrqCNoSd/QpAyp+Dw0a1Vps13l6ma1fH8g7zSPNsA59B/kWgeylFuA/lw==}
     engines: {node: '>=18.0.0'}
 
   '@smithy/property-provider@4.1.1':
@@ -1638,8 +1645,16 @@ packages:
     resolution: {integrity: sha512-T8SlkLYCwfT/6m33SIU/JOVGNwoelkrvGjFKDSDtVvAXj/9gOT78JVJEas5a+ETjOu4SVvpCstKgd0PxSu/aHw==}
     engines: {node: '>=18.0.0'}
 
+  '@smithy/protocol-http@5.3.5':
+    resolution: {integrity: sha512-RlaL+sA0LNMp03bf7XPbFmT5gN+w3besXSWMkA8rcmxLSVfiEXElQi4O2IWwPfxzcHkxqrwBFMbngB8yx/RvaQ==}
+    engines: {node: '>=18.0.0'}
+
   '@smithy/querystring-builder@4.1.1':
     resolution: {integrity: sha512-J9b55bfimP4z/Jg1gNo+AT84hr90p716/nvxDkPGCD4W70MPms0h8KF50RDRgBGZeL83/u59DWNqJv6tEP/DHA==}
+    engines: {node: '>=18.0.0'}
+
+  '@smithy/querystring-builder@4.2.5':
+    resolution: {integrity: sha512-y98otMI1saoajeik2kLfGyRp11e5U/iJYH/wLCh3aTV/XutbGT9nziKGkgCaMD1ghK7p6htHMm6b6scl9JRUWg==}
     engines: {node: '>=18.0.0'}
 
   '@smithy/querystring-parser@4.1.1':
@@ -1664,6 +1679,10 @@ packages:
 
   '@smithy/types@4.5.0':
     resolution: {integrity: sha512-RkUpIOsVlAwUIZXO1dsz8Zm+N72LClFfsNqf173catVlvRZiwPy0x2u0JLEA4byreOPKDZPGjmPDylMoP8ZJRg==}
+    engines: {node: '>=18.0.0'}
+
+  '@smithy/types@4.9.0':
+    resolution: {integrity: sha512-MvUbdnXDTwykR8cB1WZvNNwqoWVaTRA0RLlLmf/cIFNMM2cKWz01X4Ly6SMC4Kks30r8tT3Cty0jmeWfiuyHTA==}
     engines: {node: '>=18.0.0'}
 
   '@smithy/url-parser@4.1.1':
@@ -1724,6 +1743,10 @@ packages:
 
   '@smithy/util-uri-escape@4.1.0':
     resolution: {integrity: sha512-b0EFQkq35K5NHUYxU72JuoheM6+pytEVUGlTwiFxWFpmddA+Bpz3LgsPRIpBk8lnPE47yT7AF2Egc3jVnKLuPg==}
+    engines: {node: '>=18.0.0'}
+
+  '@smithy/util-uri-escape@4.2.0':
+    resolution: {integrity: sha512-igZpCKV9+E/Mzrpq6YacdTQ0qTiLm85gD6N/IrmyDvQFA4UnU3d5g3m8tMT/6zG/vVkWSU+VxeUyGonL62DuxA==}
     engines: {node: '>=18.0.0'}
 
   '@smithy/util-utf8@2.3.0':
@@ -4659,7 +4682,7 @@ snapshots:
       '@smithy/middleware-serde': 4.1.1
       '@smithy/middleware-stack': 4.1.1
       '@smithy/node-config-provider': 4.2.2
-      '@smithy/node-http-handler': 4.2.1
+      '@smithy/node-http-handler': 4.4.5
       '@smithy/protocol-http': 5.2.1
       '@smithy/smithy-client': 4.6.4
       '@smithy/types': 4.5.0
@@ -4718,7 +4741,7 @@ snapshots:
       '@smithy/middleware-serde': 4.1.1
       '@smithy/middleware-stack': 4.1.1
       '@smithy/node-config-provider': 4.2.2
-      '@smithy/node-http-handler': 4.2.1
+      '@smithy/node-http-handler': 4.4.5
       '@smithy/protocol-http': 5.2.1
       '@smithy/smithy-client': 4.6.4
       '@smithy/types': 4.5.0
@@ -4764,7 +4787,7 @@ snapshots:
       '@smithy/middleware-serde': 4.1.1
       '@smithy/middleware-stack': 4.1.1
       '@smithy/node-config-provider': 4.2.2
-      '@smithy/node-http-handler': 4.2.1
+      '@smithy/node-http-handler': 4.4.5
       '@smithy/protocol-http': 5.2.1
       '@smithy/smithy-client': 4.6.4
       '@smithy/types': 4.5.0
@@ -4821,7 +4844,7 @@ snapshots:
       '@aws-sdk/core': 3.896.0
       '@aws-sdk/types': 3.893.0
       '@smithy/fetch-http-handler': 5.2.1
-      '@smithy/node-http-handler': 4.2.1
+      '@smithy/node-http-handler': 4.4.5
       '@smithy/property-provider': 4.1.1
       '@smithy/protocol-http': 5.2.1
       '@smithy/smithy-client': 4.6.4
@@ -5051,7 +5074,7 @@ snapshots:
       '@smithy/middleware-serde': 4.1.1
       '@smithy/middleware-stack': 4.1.1
       '@smithy/node-config-provider': 4.2.2
-      '@smithy/node-http-handler': 4.2.1
+      '@smithy/node-http-handler': 4.4.5
       '@smithy/protocol-http': 5.2.1
       '@smithy/smithy-client': 4.6.4
       '@smithy/types': 4.5.0
@@ -6391,6 +6414,11 @@ snapshots:
       '@smithy/types': 4.5.0
       tslib: 2.8.1
 
+  '@smithy/abort-controller@4.2.5':
+    dependencies:
+      '@smithy/types': 4.9.0
+      tslib: 2.8.1
+
   '@smithy/chunked-blob-reader-native@4.1.0':
     dependencies:
       '@smithy/util-base64': 4.1.0
@@ -6553,12 +6581,12 @@ snapshots:
       '@smithy/types': 4.5.0
       tslib: 2.8.1
 
-  '@smithy/node-http-handler@4.2.1':
+  '@smithy/node-http-handler@4.4.5':
     dependencies:
-      '@smithy/abort-controller': 4.1.1
-      '@smithy/protocol-http': 5.2.1
-      '@smithy/querystring-builder': 4.1.1
-      '@smithy/types': 4.5.0
+      '@smithy/abort-controller': 4.2.5
+      '@smithy/protocol-http': 5.3.5
+      '@smithy/querystring-builder': 4.2.5
+      '@smithy/types': 4.9.0
       tslib: 2.8.1
 
   '@smithy/property-provider@4.1.1':
@@ -6571,10 +6599,21 @@ snapshots:
       '@smithy/types': 4.5.0
       tslib: 2.8.1
 
+  '@smithy/protocol-http@5.3.5':
+    dependencies:
+      '@smithy/types': 4.9.0
+      tslib: 2.8.1
+
   '@smithy/querystring-builder@4.1.1':
     dependencies:
       '@smithy/types': 4.5.0
       '@smithy/util-uri-escape': 4.1.0
+      tslib: 2.8.1
+
+  '@smithy/querystring-builder@4.2.5':
+    dependencies:
+      '@smithy/types': 4.9.0
+      '@smithy/util-uri-escape': 4.2.0
       tslib: 2.8.1
 
   '@smithy/querystring-parser@4.1.1':
@@ -6613,6 +6652,10 @@ snapshots:
       tslib: 2.8.1
 
   '@smithy/types@4.5.0':
+    dependencies:
+      tslib: 2.8.1
+
+  '@smithy/types@4.9.0':
     dependencies:
       tslib: 2.8.1
 
@@ -6692,7 +6735,7 @@ snapshots:
   '@smithy/util-stream@4.3.2':
     dependencies:
       '@smithy/fetch-http-handler': 5.2.1
-      '@smithy/node-http-handler': 4.2.1
+      '@smithy/node-http-handler': 4.4.5
       '@smithy/types': 4.5.0
       '@smithy/util-base64': 4.1.0
       '@smithy/util-buffer-from': 4.1.0
@@ -6701,6 +6744,10 @@ snapshots:
       tslib: 2.8.1
 
   '@smithy/util-uri-escape@4.1.0':
+    dependencies:
+      tslib: 2.8.1
+
+  '@smithy/util-uri-escape@4.2.0':
     dependencies:
       tslib: 2.8.1
 

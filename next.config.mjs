@@ -4,6 +4,13 @@ import { withPayload } from '@payloadcms/next/withPayload'
 const nextConfig = {
   // Your Next.js config here
   output: 'standalone',
+  // Configure for large file uploads (5GB limit)
+  experimental: {
+    // Increase body size limit for large file uploads
+    serverActions: {
+      bodySizeLimit: '5gb',
+    },
+  },
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {
       '.cjs': ['.cts', '.cjs'],
