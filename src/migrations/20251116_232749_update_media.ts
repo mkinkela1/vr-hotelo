@@ -2,7 +2,7 @@ import { MigrateDownArgs, MigrateUpArgs, sql } from '@payloadcms/db-postgres'
 
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
-   ALTER TABLE "media" RENAME COLUMN "alt" TO "title";
+   ALTER TABLE "media" RENAME COLUMN IF EXISTS "alt" TO "title";
   DROP INDEX "media_filename_idx";
   ALTER TABLE "media" ALTER COLUMN "filename" SET NOT NULL;
   ALTER TABLE "media" ADD COLUMN "r2_key" varchar NULL;
