@@ -1,11 +1,11 @@
-import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
+import { MigrateDownArgs, MigrateUpArgs, sql } from '@payloadcms/db-postgres'
 
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
    ALTER TABLE "media" RENAME COLUMN "alt" TO "title";
   DROP INDEX "media_filename_idx";
   ALTER TABLE "media" ALTER COLUMN "filename" SET NOT NULL;
-  ALTER TABLE "media" ADD COLUMN "r2_key" varchar NOT NULL;
+  ALTER TABLE "media" ADD COLUMN "r2_key" varchar NULL;
   ALTER TABLE "media" DROP COLUMN "locale";
   ALTER TABLE "media" DROP COLUMN "thumbnail_u_r_l";
   DROP TYPE "public"."enum_media_locale";`)

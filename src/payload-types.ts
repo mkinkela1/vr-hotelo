@@ -234,8 +234,8 @@ export interface Media {
    * The thumbnail of the media
    */
   thumbnail?: (number | null) | Thumbnail;
-  filename: string;
-  r2Key: string;
+  filename?: string | null;
+  r2Key?: string | null;
   /**
    * Public R2 URL to the file
    */

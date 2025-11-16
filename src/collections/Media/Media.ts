@@ -57,43 +57,66 @@ export const Media: CollectionConfig = {
     {
       name: 'filename',
       type: 'text',
-      required: true,
+      admin: {
+        readOnly: true,
+      },
     },
     {
       name: 'r2Key',
       type: 'text',
-      required: true,
+      admin: {
+        readOnly: true,
+      },
     },
     {
       name: 'url',
       type: 'text',
       admin: {
         description: 'Public R2 URL to the file',
+        readOnly: true,
       },
     },
     {
       name: 'mimeType',
       type: 'text',
+      admin: {
+        readOnly: true,
+      },
     },
     {
       name: 'filesize',
       type: 'number',
+      admin: {
+        readOnly: true,
+      },
     },
     {
       name: 'width',
       type: 'number',
+      admin: {
+        readOnly: true,
+      },
     },
     {
       name: 'height',
       type: 'number',
+      admin: {
+        readOnly: true,
+      },
     },
     {
       name: 'focalX',
       type: 'number',
+      admin: {
+        readOnly: true,
+      },
     },
     {
       name: 'focalY',
       type: 'number',
+      admin: {
+        readOnly: true,
+      },
     },
     {
       type: 'ui',
