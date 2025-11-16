@@ -14,7 +14,7 @@ dns.setServers([
 
 export const s3Plugin = s3Storage({
   collections: {
-    media: true,
+    // media: true, // Disabled - using custom R2 upload endpoints instead
     whitelabels: true,
     thumbnails: true,
   },

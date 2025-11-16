@@ -224,31 +224,30 @@ export interface Whitelabel {
 export interface Media {
   id: number;
   tenant?: (number | null) | Tenant;
-  alt: string;
+  title: string;
   caption?: string | null;
   /**
    * When enabled, this media will be a 360 video
    */
   is360?: boolean | null;
   /**
-   * The locale of the media
-   */
-  locale?: ('hr' | 'en' | 'fr' | 'de' | 'it') | null;
-  /**
    * The thumbnail of the media
    */
   thumbnail?: (number | null) | Thumbnail;
-  updatedAt: string;
-  createdAt: string;
+  filename: string;
+  r2Key: string;
+  /**
+   * Public R2 URL to the file
+   */
   url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
   mimeType?: string | null;
   filesize?: number | null;
   width?: number | null;
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -379,22 +378,21 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   tenant?: T;
-  alt?: T;
+  title?: T;
   caption?: T;
   is360?: T;
-  locale?: T;
   thumbnail?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
   filename?: T;
+  r2Key?: T;
+  url?: T;
   mimeType?: T;
   filesize?: T;
   width?: T;
   height?: T;
   focalX?: T;
   focalY?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
