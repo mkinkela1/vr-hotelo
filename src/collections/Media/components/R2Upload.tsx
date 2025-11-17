@@ -40,7 +40,6 @@ const R2Upload = () => {
       await fetch(presign.uploadUrl, {
         method: 'PUT',
         body: file,
-        headers: { 'Content-Type': file.type },
       })
 
       if (filenameField.setValue) filenameField.setValue(file.name)
