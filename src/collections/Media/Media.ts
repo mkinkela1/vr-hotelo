@@ -6,6 +6,7 @@ import { mediaCompleteHandler } from '@/collections/Media/endpoints/mediaComplet
 import { mediaPresignHandler } from '@/collections/Media/endpoints/mediaPresignHandler'
 import { Thumbnail } from '@/payload-types'
 import { customEndpointAuthorization } from '@/utils/custom-endpoint-authorization'
+import { defaultLocale, locales } from '@/utils/locales'
 import type { CollectionConfig } from 'payload'
 
 export const Media: CollectionConfig = {
@@ -33,6 +34,19 @@ export const Media: CollectionConfig = {
       label: '360 Video',
       admin: {
         description: 'When enabled, this media will be a 360 video',
+      },
+    },
+    {
+      name: 'locale',
+      type: 'select',
+      options: locales.map((locale) => ({
+        label: locale.label,
+        value: locale.code,
+      })),
+      defaultValue: defaultLocale,
+      label: 'Locale',
+      admin: {
+        description: 'The locale of the media',
       },
     },
     {

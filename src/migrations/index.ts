@@ -5,6 +5,7 @@ import * as migration_20251004_204241_localization_ai_content from './20251004_2
 import * as migration_20251004_210220_remove_tenant_uploaded from './20251004_210220_remove_tenant_uploaded';
 import * as migration_20251005_191009_one_ai_content_per_lang from './20251005_191009_one_ai_content_per_lang';
 import * as migration_20251116_232749_update_media from './20251116_232749_update_media';
+import * as migration_20251207_175806_revert_locale from './20251207_175806_revert_locale';
 
 export const migrations = [
   {
@@ -40,6 +41,11 @@ export const migrations = [
   {
     up: migration_20251116_232749_update_media.up,
     down: migration_20251116_232749_update_media.down,
-    name: '20251116_232749_update_media'
+    name: '20251116_232749_update_media',
+  },
+  {
+    up: migration_20251207_175806_revert_locale.up,
+    down: migration_20251207_175806_revert_locale.down,
+    name: '20251207_175806_revert_locale'
   },
 ];

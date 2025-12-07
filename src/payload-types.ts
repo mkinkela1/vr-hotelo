@@ -231,6 +231,10 @@ export interface Media {
    */
   is360?: boolean | null;
   /**
+   * The locale of the media
+   */
+  locale?: ('hr' | 'en' | 'fr' | 'de' | 'it') | null;
+  /**
    * The thumbnail of the media
    */
   thumbnail?: (number | null) | Thumbnail;
@@ -381,6 +385,7 @@ export interface MediaSelect<T extends boolean = true> {
   title?: T;
   caption?: T;
   is360?: T;
+  locale?: T;
   thumbnail?: T;
   filename?: T;
   r2Key?: T;
