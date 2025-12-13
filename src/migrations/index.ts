@@ -6,6 +6,7 @@ import * as migration_20251004_210220_remove_tenant_uploaded from './20251004_21
 import * as migration_20251005_191009_one_ai_content_per_lang from './20251005_191009_one_ai_content_per_lang';
 import * as migration_20251116_232749_update_media from './20251116_232749_update_media';
 import * as migration_20251207_175806_revert_locale from './20251207_175806_revert_locale';
+import * as migration_20251213_103841_locale_title from './20251213_103841_locale_title';
 
 export const migrations = [
   {
@@ -46,6 +47,11 @@ export const migrations = [
   {
     up: migration_20251207_175806_revert_locale.up,
     down: migration_20251207_175806_revert_locale.down,
-    name: '20251207_175806_revert_locale'
+    name: '20251207_175806_revert_locale',
+  },
+  {
+    up: migration_20251213_103841_locale_title.up,
+    down: migration_20251213_103841_locale_title.down,
+    name: '20251213_103841_locale_title'
   },
 ];

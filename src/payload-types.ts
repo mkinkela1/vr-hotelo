@@ -231,9 +231,25 @@ export interface Media {
    */
   is360?: boolean | null;
   /**
-   * The locale of the media
+   * Select one or more locales for this media
    */
-  locale?: ('hr' | 'en' | 'fr' | 'de' | 'it') | null;
+  locale?: ('hr' | 'en' | 'fr' | 'de' | 'it')[] | null;
+  /**
+   * Title for each selected locale
+   */
+  localizedTitles?:
+    | {
+        /**
+         * Select the locale for this title
+         */
+        locale: 'hr' | 'en' | 'fr' | 'de' | 'it';
+        /**
+         * Title in this locale
+         */
+        title: string;
+        id?: string | null;
+      }[]
+    | null;
   /**
    * The thumbnail of the media
    */
@@ -386,6 +402,13 @@ export interface MediaSelect<T extends boolean = true> {
   caption?: T;
   is360?: T;
   locale?: T;
+  localizedTitles?:
+    | T
+    | {
+        locale?: T;
+        title?: T;
+        id?: T;
+      };
   thumbnail?: T;
   filename?: T;
   r2Key?: T;

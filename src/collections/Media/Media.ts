@@ -6,8 +6,17 @@ import { mediaCompleteHandler } from '@/collections/Media/endpoints/mediaComplet
 import { mediaPresignHandler } from '@/collections/Media/endpoints/mediaPresignHandler'
 import { Thumbnail } from '@/payload-types'
 import { customEndpointAuthorization } from '@/utils/custom-endpoint-authorization'
-import { defaultLocale, locales } from '@/utils/locales'
+import { locales } from '@/utils/locales'
 import type { CollectionConfig } from 'payload'
+
+// Map locale codes to English language names
+const localeCodeToEnglishName: Record<string, string> = {
+  hr: 'croatian',
+  en: 'english',
+  fr: 'french',
+  de: 'german',
+  it: 'italian',
+}
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -39,15 +48,45 @@ export const Media: CollectionConfig = {
     {
       name: 'locale',
       type: 'select',
+      hasMany: true,
       options: locales.map((locale) => ({
         label: locale.label,
         value: locale.code,
       })),
-      defaultValue: defaultLocale,
-      label: 'Locale',
+      label: 'Locales',
       admin: {
-        description: 'The locale of the media',
+        description: 'Select one or more locales for this media',
       },
+    },
+    {
+      name: 'localizedTitles',
+      type: 'array',
+      label: 'Localized Titles',
+      admin: {
+        description: 'Title for each selected locale',
+      },
+      fields: [
+        {
+          name: 'locale',
+          type: 'select',
+          options: locales.map((locale) => ({
+            label: locale.label,
+            value: locale.code,
+          })),
+          required: true,
+          admin: {
+            description: 'Select the locale for this title',
+          },
+        },
+        {
+          name: 'title',
+          type: 'text',
+          required: true,
+          admin: {
+            description: 'Title in this locale',
+          },
+        },
+      ],
     },
     {
       name: 'thumbnail',
@@ -167,6 +206,19 @@ export const Media: CollectionConfig = {
         const response = currentTenantMedia.docs.map((media) => {
           const thumbnailData = media?.thumbnail as Thumbnail | null
 
+          // Build localized_titles object from localizedTitles array
+          const localizedTitles: Record<string, string> = {}
+          const localizedTitlesData = (media as any).localizedTitles
+          if (localizedTitlesData && Array.isArray(localizedTitlesData)) {
+            localizedTitlesData.forEach((item: { locale: string; title: string }) => {
+              if (item?.locale && item?.title) {
+                // Map locale code to English language name
+                const localeKey = localeCodeToEnglishName[item.locale] || item.locale
+                localizedTitles[localeKey] = item.title
+              }
+            })
+          }
+
           return {
             id: media.id,
             title: media.title,
@@ -188,6 +240,7 @@ export const Media: CollectionConfig = {
                 }
               : null,
             locale: media.locale,
+            localized_titles: localizedTitles,
             filename: media.filename,
             createdAt: media.createdAt,
             updatedAt: media.updatedAt,
