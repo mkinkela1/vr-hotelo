@@ -9,15 +9,6 @@ import { customEndpointAuthorization } from '@/utils/custom-endpoint-authorizati
 import { locales } from '@/utils/locales'
 import type { CollectionConfig } from 'payload'
 
-// Map locale codes to English language names
-const localeCodeToEnglishName: Record<string, string> = {
-  hr: 'croatian',
-  en: 'english',
-  fr: 'french',
-  de: 'german',
-  it: 'italian',
-}
-
 export const Media: CollectionConfig = {
   slug: 'media',
   access: {
@@ -212,8 +203,7 @@ export const Media: CollectionConfig = {
           if (localizedTitlesData && Array.isArray(localizedTitlesData)) {
             localizedTitlesData.forEach((item: { locale: string; title: string }) => {
               if (item?.locale && item?.title) {
-                // Map locale code to English language name
-                const localeKey = localeCodeToEnglishName[item.locale] || item.locale
+                const localeKey = item.locale || item.locale
                 localizedTitles[localeKey] = item.title
               }
             })
@@ -240,7 +230,7 @@ export const Media: CollectionConfig = {
                 }
               : null,
             locale: media.locale,
-            localized_titles: localizedTitles,
+            localization: localizedTitles,
             filename: media.filename,
             createdAt: media.createdAt,
             updatedAt: media.updatedAt,
