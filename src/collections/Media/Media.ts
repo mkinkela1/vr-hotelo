@@ -187,6 +187,7 @@ export const Media: CollectionConfig = {
                   focalY: thumbnailData.focalY,
                 }
               : null,
+            locale: media.locale,
             filename: media.filename,
             createdAt: media.createdAt,
             updatedAt: media.updatedAt,
