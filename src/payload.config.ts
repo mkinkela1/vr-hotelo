@@ -37,6 +37,7 @@ export default buildConfig({
       },
     },
   },
+
   collections: [Users, Media, Tenants, Whitelabels, Thumbnails],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
@@ -45,7 +46,13 @@ export default buildConfig({
   },
   db: postgresAdapter({
     pool: {
+      application_name: 'vrhotelo-payload',
       connectionString: process.env.DATABASE_URI || '',
+      min: 1,
+      max: 5,
+      idleTimeoutMillis: 30000,
+      maxUses: 1000,
+      log: (...args) => console.log(new Date().toISOString(), 'PG Pool:', ...args),
     },
     logger: true,
   }),

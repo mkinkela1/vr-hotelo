@@ -1,0 +1,10 @@
+http://fwkw8g8gww00g4ggg0w8gg4s.161.97.75.123.sslip.io,
+https://app.vrhotelo.com,
+https://test.app.vrhotelo.com,
+https://belvedere-plaza-medulin.app.vrhotelo.com,
+https://apartment-fuma.app.vrhotelo.com,
+https://fmtu.app.vrhotelo.com,
+https://gh-adriatic.app.vrhotelo.com,
+https://crvena-luka.app.vrhotelo.com,
+https://grabovaca.app.vrhotelo.com,
+https://telemach-osijek.app.vrhotelo.com
