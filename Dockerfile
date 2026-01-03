@@ -26,6 +26,12 @@ RUN \
 FROM base AS builder
 WORKDIR /app
 
+# Build arguments for server actions encryption
+# IMPORTANT: This MUST be set at build time for server actions to work correctly
+# Generate with: openssl rand -base64 32
+ARG NEXT_SERVER_ACTIONS_ENCRYPTION_KEY
+ENV NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY}
+
 # Copy dependencies
 COPY --from=deps /app/node_modules ./node_modules
 
@@ -34,6 +40,10 @@ COPY . .
 
 # Build Next.js standalone output
 RUN \
+  if [ -z "$NEXT_SERVER_ACTIONS_ENCRYPTION_KEY" ]; then \
+    echo "WARNING: NEXT_SERVER_ACTIONS_ENCRYPTION_KEY not set at build time!"; \
+    echo "Server actions may fail. Generate with: openssl rand -base64 32"; \
+  fi && \
   if [ -f yarn.lock ]; then yarn run build; \
   elif [ -f package-lock.json ]; then npm run build; \
   elif [ -f pnpm-lock.yaml ]; then npm install -g pnpm && pnpm run build; \

@@ -23,13 +23,31 @@ const dirname = path.dirname(filename)
 // Debug: Log startup info and track memory stats
 const debugStartTime = Date.now()
 
+// Detect key format: base64 typically has +, /, = characters; hex is only 0-9a-f
+const detectKeyFormat = (key: string | undefined) => {
+  if (!key) return 'not-set'
+  if (/^[0-9a-fA-F]+$/.test(key)) return 'hex'
+  if (/^[A-Za-z0-9+/=]+$/.test(key)) return 'base64'
+  return 'unknown'
+}
+
+const encryptionKey = process.env.NEXT_SERVER_ACTIONS_ENCRYPTION_KEY
+const keyFormat = detectKeyFormat(encryptionKey)
+
 // Log critical configuration at startup
 console.log(
   '[DEBUG:STARTUP]',
   JSON.stringify({
     nodeEnv: process.env.NODE_ENV,
-    hasEncryptionKey: !!process.env.NEXT_SERVER_ACTIONS_ENCRYPTION_KEY,
-    encryptionKeyLength: process.env.NEXT_SERVER_ACTIONS_ENCRYPTION_KEY?.length || 0,
+    hasEncryptionKey: !!encryptionKey,
+    encryptionKeyLength: encryptionKey?.length || 0,
+    keyFormat: keyFormat,
+    keyFormatWarning:
+      keyFormat === 'hex'
+        ? 'WARNING: Key appears to be hex - Next.js expects base64! Use: openssl rand -base64 32'
+        : keyFormat === 'not-set'
+          ? 'WARNING: No encryption key set!'
+          : null,
     hasBuildId: !!process.env.BUILD_ID,
     buildId: process.env.BUILD_ID || 'not-set',
     timestamp: new Date().toISOString(),
