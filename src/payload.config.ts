@@ -19,6 +19,27 @@ import { Users } from './collections/Users/Users'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+// #region agent log
+// Debug: Track memory and connection stats periodically (logs to Coolify)
+const debugStartTime = Date.now()
+setInterval(() => {
+  const memUsage = process.memoryUsage()
+  const uptime = Math.floor((Date.now() - debugStartTime) / 1000)
+  console.log(
+    '[DEBUG:MEMORY]',
+    JSON.stringify({
+      heapUsedMB: Math.round(memUsage.heapUsed / 1024 / 1024),
+      heapTotalMB: Math.round(memUsage.heapTotal / 1024 / 1024),
+      rssMB: Math.round(memUsage.rss / 1024 / 1024),
+      externalMB: Math.round(memUsage.external / 1024 / 1024),
+      uptimeSeconds: uptime,
+      uptimeHours: Math.round((uptime / 3600) * 100) / 100,
+      timestamp: new Date().toISOString(),
+    }),
+  )
+}, 60000) // Log every 60 seconds
+// #endregion
+
 export default buildConfig({
   admin: {
     meta: {
@@ -52,7 +73,11 @@ export default buildConfig({
       max: 5,
       idleTimeoutMillis: 30000,
       maxUses: 1000,
-      log: (...args) => console.log(new Date().toISOString(), 'PG Pool:', ...args),
+      // #region agent log
+      log: (...args: any[]) => {
+        console.log('[DEBUG:PGPOOL]', new Date().toISOString(), ...args)
+      },
+      // #endregion
     },
     logger: true,
   }),
