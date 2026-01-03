@@ -20,8 +20,22 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 // #region agent log
-// Debug: Track memory and connection stats periodically (logs to Coolify)
+// Debug: Log startup info and track memory stats
 const debugStartTime = Date.now()
+
+// Log critical configuration at startup
+console.log(
+  '[DEBUG:STARTUP]',
+  JSON.stringify({
+    nodeEnv: process.env.NODE_ENV,
+    hasEncryptionKey: !!process.env.NEXT_SERVER_ACTIONS_ENCRYPTION_KEY,
+    encryptionKeyLength: process.env.NEXT_SERVER_ACTIONS_ENCRYPTION_KEY?.length || 0,
+    hasBuildId: !!process.env.BUILD_ID,
+    buildId: process.env.BUILD_ID || 'not-set',
+    timestamp: new Date().toISOString(),
+  }),
+)
+
 setInterval(() => {
   const memUsage = process.memoryUsage()
   const uptime = Math.floor((Date.now() - debugStartTime) / 1000)

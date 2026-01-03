@@ -1,9 +1,29 @@
 import { withPayload } from '@payloadcms/next/withPayload'
+import { createHash } from 'crypto'
+import { readFileSync } from 'fs'
+
+// Generate a consistent build ID based on package.json to ensure
+// server action IDs remain stable across container restarts
+const generateConsistentBuildId = () => {
+  try {
+    const packageJson = readFileSync('./package.json', 'utf8')
+    const hash = createHash('sha256').update(packageJson).digest('hex').substring(0, 12)
+    return `build-${hash}`
+  } catch {
+    return 'build-default'
+  }
+}
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Your Next.js config here
   output: 'standalone',
+  // Use consistent build ID to prevent server action ID mismatches
+  generateBuildId: async () => {
+    const buildId = process.env.BUILD_ID || generateConsistentBuildId()
+    console.log(`[BUILD] Using build ID: ${buildId}`)
+    return buildId
+  },
   // Configure for large file uploads (5GB limit)
   experimental: {
     // Increase body size limit for large file uploads

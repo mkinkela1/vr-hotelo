@@ -33,7 +33,7 @@ const R2Upload = () => {
           mimeType: file.type,
         }),
       }).then((r) => {
-        if (!r.ok) throw new Error('Failed to get presigned URL')
+        if (!r.ok) throw new Error('Failed to get presigned URL', { cause: r.statusText })
         return r.json()
       })
 
