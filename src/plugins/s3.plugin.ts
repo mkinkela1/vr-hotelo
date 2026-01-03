@@ -12,11 +12,6 @@ dns.setServers([
   '8.8.4.4', // Google DNS (fallback)
 ])
 
-// #region agent log
-let dnsLookupCount = 0
-let dnsFailureCount = 0
-// #endregion
-
 export const s3Plugin = s3Storage({
   collections: {
     // media: true, // Disabled - using custom R2 upload endpoints instead
@@ -46,48 +41,15 @@ export const s3Plugin = s3Storage({
         timeout: 3600000, // INCREASED: 60 minutes socket timeout
         // DNS lookup settings
         lookup: (hostname, options, callback) => {
-          // #region agent log
-          dnsLookupCount++
-          // #endregion
           // Custom DNS lookup with retry logic
           const doLookup = (attemptNum: number) => {
             dns.lookup(hostname, options, (err, address, family) => {
               if (err && attemptNum < 3) {
-                // #region agent log
-                dnsFailureCount++
-                console.log(
-                  '[DEBUG:DNS]',
-                  JSON.stringify({
-                    event: 'retry',
-                    hostname,
-                    attemptNum,
-                    totalLookups: dnsLookupCount,
-                    totalFailures: dnsFailureCount,
-                    error: err?.message,
-                    timestamp: new Date().toISOString(),
-                  }),
-                )
-                // #endregion
                 console.log(
                   `DNS lookup failed for ${hostname}, attempt ${attemptNum + 1}/3, retrying...`,
                 )
                 setTimeout(() => doLookup(attemptNum + 1), 1000 * attemptNum)
               } else {
-                // #region agent log
-                if (err) {
-                  console.log(
-                    '[DEBUG:DNS]',
-                    JSON.stringify({
-                      event: 'finalFailure',
-                      hostname,
-                      totalLookups: dnsLookupCount,
-                      totalFailures: dnsFailureCount,
-                      error: err?.message,
-                      timestamp: new Date().toISOString(),
-                    }),
-                  )
-                }
-                // #endregion
                 callback(err, address, family)
               }
             })

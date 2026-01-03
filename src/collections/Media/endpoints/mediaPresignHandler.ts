@@ -20,20 +20,6 @@ export const mediaPresignHandler: PayloadHandler = async (req: PayloadRequest) =
 
   const key = `tenants/${tenantId}/${Date.now()}-${filename}`
 
-  // #region agent log
-  s3ClientCreationCount++
-  console.log(
-    '[DEBUG:S3CLIENT]',
-    JSON.stringify({
-      event: 'creating',
-      totalClientsCreated: s3ClientCreationCount,
-      tenantId,
-      filename,
-      timestamp: new Date().toISOString(),
-    }),
-  )
-  // #endregion
-
   const client = new S3Client({
     region: 'auto',
     endpoint: process.env.S3_ENDPOINT,
@@ -53,18 +39,7 @@ export const mediaPresignHandler: PayloadHandler = async (req: PayloadRequest) =
     expiresIn: 60 * 30, // 30 minutes
   })
 
-  // #region agent log
-  // FIX: Destroy the client after use to prevent connection/memory leaks
   client.destroy()
-  console.log(
-    '[DEBUG:S3CLIENT]',
-    JSON.stringify({
-      event: 'destroyed',
-      totalClientsCreated: s3ClientCreationCount,
-      timestamp: new Date().toISOString(),
-    }),
-  )
-  // #endregion
 
   return Response.json({
     uploadUrl: signedUrl,

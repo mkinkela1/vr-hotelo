@@ -19,59 +19,6 @@ import { Users } from './collections/Users/Users'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-// #region agent log
-// Debug: Log startup info and track memory stats
-const debugStartTime = Date.now()
-
-// Detect key format: base64 typically has +, /, = characters; hex is only 0-9a-f
-const detectKeyFormat = (key: string | undefined) => {
-  if (!key) return 'not-set'
-  if (/^[0-9a-fA-F]+$/.test(key)) return 'hex'
-  if (/^[A-Za-z0-9+/=]+$/.test(key)) return 'base64'
-  return 'unknown'
-}
-
-const encryptionKey = process.env.NEXT_SERVER_ACTIONS_ENCRYPTION_KEY
-const keyFormat = detectKeyFormat(encryptionKey)
-
-// Log critical configuration at startup
-console.log(
-  '[DEBUG:STARTUP]',
-  JSON.stringify({
-    nodeEnv: process.env.NODE_ENV,
-    hasEncryptionKey: !!encryptionKey,
-    encryptionKeyLength: encryptionKey?.length || 0,
-    keyFormat: keyFormat,
-    keyFormatWarning:
-      keyFormat === 'hex'
-        ? 'WARNING: Key appears to be hex - Next.js expects base64! Use: openssl rand -base64 32'
-        : keyFormat === 'not-set'
-          ? 'WARNING: No encryption key set!'
-          : null,
-    hasBuildId: !!process.env.BUILD_ID,
-    buildId: process.env.BUILD_ID || 'not-set',
-    timestamp: new Date().toISOString(),
-  }),
-)
-
-setInterval(() => {
-  const memUsage = process.memoryUsage()
-  const uptime = Math.floor((Date.now() - debugStartTime) / 1000)
-  console.log(
-    '[DEBUG:MEMORY]',
-    JSON.stringify({
-      heapUsedMB: Math.round(memUsage.heapUsed / 1024 / 1024),
-      heapTotalMB: Math.round(memUsage.heapTotal / 1024 / 1024),
-      rssMB: Math.round(memUsage.rss / 1024 / 1024),
-      externalMB: Math.round(memUsage.external / 1024 / 1024),
-      uptimeSeconds: uptime,
-      uptimeHours: Math.round((uptime / 3600) * 100) / 100,
-      timestamp: new Date().toISOString(),
-    }),
-  )
-}, 60000) // Log every 60 seconds
-// #endregion
-
 export default buildConfig({
   admin: {
     meta: {
@@ -105,11 +52,6 @@ export default buildConfig({
       max: 5,
       idleTimeoutMillis: 30000,
       maxUses: 1000,
-      // #region agent log
-      log: (...args: any[]) => {
-        console.log('[DEBUG:PGPOOL]', new Date().toISOString(), ...args)
-      },
-      // #endregion
     },
     logger: true,
   }),
