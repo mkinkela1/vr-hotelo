@@ -9,8 +9,12 @@ const nextConfig = {
     // Increase body size limit for large file uploads
     serverActions: {
       bodySizeLimit: '5gb',
+      // Allow all origins for server actions (needed for multi-tenant)
+      allowedOrigins: ['*'],
     },
   },
+  // Disable static optimization for payload admin to prevent stale caching
+  skipMiddlewareUrlNormalize: true,
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {
       '.cjs': ['.cts', '.cjs'],
