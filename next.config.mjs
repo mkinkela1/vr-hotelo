@@ -30,7 +30,8 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '5gb',
       // Allow all origins for server actions (needed for multi-tenant)
-      allowedOrigins: ['*'],
+      // Using wildcard patterns for multi-tenant subdomains
+      allowedOrigins: ['localhost:3000', '*.vrhotelo.com', '*.app.vrhotelo.com'],
     },
   },
   // Disable static optimization for payload admin to prevent stale caching
@@ -62,12 +63,13 @@ const nextConfig = {
         source: '/:path*',
         headers: [
           { key: 'Access-Control-Allow-Credentials', value: 'true' },
-          { key: 'Access-Control-Allow-Origin', value: '*' }, // replace this your actual origin
-          { key: 'Access-Control-Allow-Methods', value: 'GET,DELETE,PATCH,POST,PUT' },
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET,DELETE,PATCH,POST,PUT,OPTIONS' },
           {
             key: 'Access-Control-Allow-Headers',
+            // Include Next.js server action headers (Next-Action, Next-Router-State-Tree, etc.)
             value:
-              'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
+              'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Next-Action, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url, RSC, Cookie',
           },
         ],
       },
