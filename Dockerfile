@@ -40,10 +40,19 @@ COPY . .
 
 # Build Next.js standalone output
 RUN \
+  echo "=== BUILD TIME KEY CHECK ===" && \
   if [ -z "$NEXT_SERVER_ACTIONS_ENCRYPTION_KEY" ]; then \
-    echo "WARNING: NEXT_SERVER_ACTIONS_ENCRYPTION_KEY not set at build time!"; \
-    echo "Server actions may fail. Generate with: openssl rand -base64 32"; \
+    echo "ERROR: NEXT_SERVER_ACTIONS_ENCRYPTION_KEY not set at build time!"; \
+    echo "Server actions WILL fail. Generate with: openssl rand -base64 32"; \
+    echo "Pass as --build-arg NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=<your-key>"; \
+  else \
+    KEY_LEN=$(printf '%s' "$NEXT_SERVER_ACTIONS_ENCRYPTION_KEY" | wc -c | tr -d ' '); \
+    echo "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY is set (length: ${KEY_LEN} chars)"; \
+    if [ "$KEY_LEN" -lt 40 ]; then \
+      echo "WARNING: Key seems short. Expected ~44 chars for base64."; \
+    fi; \
   fi && \
+  echo "===========================" && \
   if [ -f yarn.lock ]; then yarn run build; \
   elif [ -f package-lock.json ]; then npm run build; \
   elif [ -f pnpm-lock.yaml ]; then npm install -g pnpm && pnpm run build; \
