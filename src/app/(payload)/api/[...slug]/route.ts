@@ -19,14 +19,18 @@ export const maxDuration = 3600 // INCREASED: 60 minutes for 3GB+ files
 let requestCount = 0
 let errorCount = 0
 
-const wrapHandler = (handler: (req: NextRequest) => Promise<Response>, method: string) => {
-  return async (req: NextRequest) => {
+const wrapHandler = (
+  handler: (request: Request, args: { params: Promise<{ slug?: string[] }> }) => Promise<Response>,
+  method: string,
+) => {
+  return async (request: Request, args: { params: Promise<{ slug?: string[] }> }) => {
     const reqId = ++requestCount
     const startTime = Date.now()
+    const req = request as NextRequest
     const path = req.nextUrl.pathname
 
     try {
-      const response = await handler(req)
+      const response = await handler(request, args)
       const duration = Date.now() - startTime
 
       if (response.status >= 500) {
