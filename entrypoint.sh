@@ -9,21 +9,35 @@ until pg_isready -d "$DATABASE_URI" >/dev/null 2>&1; do
   sleep 2
 done
 
-# Check for required environment variable for server actions stability
+# #region agent log
+# Check for required environment variable for server actions stability [HYPOTHESIS B]
+echo "=== RUNTIME KEY CHECK [HYPOTHESIS B] ==="
 if [ -z "$NEXT_SERVER_ACTIONS_ENCRYPTION_KEY" ]; then
-  echo "ERROR: NEXT_SERVER_ACTIONS_ENCRYPTION_KEY is not set!"
+  echo "ERROR: NEXT_SERVER_ACTIONS_ENCRYPTION_KEY is not set at RUNTIME!"
   echo "This WILL cause 'Failed to find Server Action' errors."
   echo "Generate with: openssl rand -base64 32"
   echo "IMPORTANT: This key MUST be set at Docker BUILD time, not just runtime!"
+  echo "Check Coolify environment variables - they may be overriding the build-time key!"
 else
   KEY_LEN=$(printf '%s' "$NEXT_SERVER_ACTIONS_ENCRYPTION_KEY" | wc -c | tr -d ' ')
-  echo "Server Actions Encryption Key: ${KEY_LEN} characters"
+  echo "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY is set at runtime (length: ${KEY_LEN} characters)"
+  echo "First 8 chars: $(printf '%s' "$NEXT_SERVER_ACTIONS_ENCRYPTION_KEY" | head -c 8)..."
+  echo "Last 8 chars: ...$(printf '%s' "$NEXT_SERVER_ACTIONS_ENCRYPTION_KEY" | tail -c 8)"
   # Check if it looks like base64 (should be ~44 chars for 32 bytes)
   if [ "$KEY_LEN" -eq 64 ]; then
     echo "WARNING: Key length 64 suggests hex format. Next.js expects base64!"
     echo "Generate with: openssl rand -base64 32 (gives ~44 chars)"
+  elif [ "$KEY_LEN" -eq 32 ]; then
+    echo "WARNING: Key length 32 suggests raw/hex format. Next.js expects base64!"
+    echo "Generate with: openssl rand -base64 32 (gives ~44 chars)"
+  elif [ "$KEY_LEN" -ge 40 ] && [ "$KEY_LEN" -le 48 ]; then
+    echo "Key length looks good for base64 format"
+  else
+    echo "WARNING: Unexpected key length. Expected ~44 chars for base64."
   fi
 fi
+echo "========================================"
+# #endregion
 
 echo "Running PayloadCMS migrations..."
 npx payload migrate

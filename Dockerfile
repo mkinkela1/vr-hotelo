@@ -39,8 +39,9 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Build Next.js standalone output
+# #region agent log
 RUN \
-  echo "=== BUILD TIME KEY CHECK ===" && \
+  echo "=== BUILD TIME KEY CHECK [HYPOTHESIS A/D/E] ===" && \
   if [ -z "$NEXT_SERVER_ACTIONS_ENCRYPTION_KEY" ]; then \
     echo "ERROR: NEXT_SERVER_ACTIONS_ENCRYPTION_KEY not set at build time!"; \
     echo "Server actions WILL fail. Generate with: openssl rand -base64 32"; \
@@ -48,6 +49,8 @@ RUN \
   else \
     KEY_LEN=$(printf '%s' "$NEXT_SERVER_ACTIONS_ENCRYPTION_KEY" | wc -c | tr -d ' '); \
     echo "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY is set (length: ${KEY_LEN} chars)"; \
+    echo "First 8 chars: $(printf '%s' "$NEXT_SERVER_ACTIONS_ENCRYPTION_KEY" | head -c 8)..."; \
+    echo "Last 8 chars: ...$(printf '%s' "$NEXT_SERVER_ACTIONS_ENCRYPTION_KEY" | tail -c 8)"; \
     if [ "$KEY_LEN" -lt 40 ]; then \
       echo "WARNING: Key seems short. Expected ~44 chars for base64."; \
     fi; \
@@ -57,7 +60,15 @@ RUN \
   elif [ -f package-lock.json ]; then npm run build; \
   elif [ -f pnpm-lock.yaml ]; then npm install -g pnpm && pnpm run build; \
   else echo "Lockfile not found." && exit 1; \
-  fi
+  fi && \
+  echo "=== POST-BUILD KEY CHECK [HYPOTHESIS D] ===" && \
+  if [ -z "$NEXT_SERVER_ACTIONS_ENCRYPTION_KEY" ]; then \
+    echo "ERROR: Key was cleared during build!"; \
+  else \
+    echo "Key still present after build (length: $(printf '%s' "$NEXT_SERVER_ACTIONS_ENCRYPTION_KEY" | wc -c | tr -d ' ') chars)"; \
+  fi && \
+  echo "==========================="
+# #endregion
 
 # -----------------------
 # Runner / Production
