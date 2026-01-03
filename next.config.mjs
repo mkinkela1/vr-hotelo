@@ -51,6 +51,16 @@ const nextConfig = {
           },
         ],
       },
+      // Prevent caching of admin pages to avoid stale server action IDs
+      {
+        source: '/admin/:path*',
+        headers: [{ key: 'Cache-Control', value: 'no-store, must-revalidate' }],
+      },
+      // Prevent caching of API routes
+      {
+        source: '/api/:path*',
+        headers: [{ key: 'Cache-Control', value: 'no-store, must-revalidate' }],
+      },
     ]
   },
 }

@@ -1,4 +1,5 @@
-'use server'
+// This is a React Server Component (RSC), NOT a server action
+// RSCs don't need 'use server' - that's only for functions callable from client
 
 import { getTenantLogo } from '@/utils/get-tenant-from-request'
 import Image from 'next/image'
