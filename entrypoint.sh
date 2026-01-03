@@ -24,20 +24,7 @@ else
   echo "First 8 chars: $(printf '%s' "$NEXT_SERVER_ACTIONS_ENCRYPTION_KEY" | head -c 8)..."
   echo "Last 8 chars: ...$(printf '%s' "$NEXT_SERVER_ACTIONS_ENCRYPTION_KEY" | tail -c 8)"
   # Check if it looks like base64 (should be ~44 chars for 32 bytes)
-  if [ "$KEY_LEN" -eq 64 ]; then
-    echo "WARNING: Key length 64 suggests hex format. Next.js expects base64!"
-    echo "Generate with: openssl rand -base64 32 (gives ~44 chars)"
-  elif [ "$KEY_LEN" -eq 32 ]; then
-    echo "WARNING: Key length 32 suggests raw/hex format. Next.js expects base64!"
-    echo "Generate with: openssl rand -base64 32 (gives ~44 chars)"
-  elif [ "$KEY_LEN" -ge 40 ] && [ "$KEY_LEN" -le 48 ]; then
-    echo "Key length looks good for base64 format"
-  else
-    echo "WARNING: Unexpected key length. Expected ~44 chars for base64."
-  fi
 fi
-echo "========================================"
-# #endregion
 
 echo "Running PayloadCMS migrations..."
 npx payload migrate

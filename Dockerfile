@@ -77,6 +77,13 @@ FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
+# #region agent log
+# CRITICAL FIX [HYPOTHESIS D]: Re-declare encryption key in runner stage
+# Docker multi-stage builds don't carry over ENV from previous stages
+ARG NEXT_SERVER_ACTIONS_ENCRYPTION_KEY
+ENV NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY}
+# #endregion
+
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs \
  && adduser --system --uid 1001 nextjs
