@@ -20,19 +20,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          # #region agent log
-          # Check if secret is available [HYPOTHESIS A]
-          if [ -z "${{ secrets.NEXT_SERVER_ACTIONS_ENCRYPTION_KEY }}" ]; then
-            echo "ERROR: GitHub Secret NEXT_SERVER_ACTIONS_ENCRYPTION_KEY is not set!"
-            exit 1
-          else
-            KEY_LEN=$(printf '%s' "${{ secrets.NEXT_SERVER_ACTIONS_ENCRYPTION_KEY }}" | wc -c)
-            echo "GitHub Secret NEXT_SERVER_ACTIONS_ENCRYPTION_KEY is set (length: ${KEY_LEN} chars)"
-          fi
-          # #endregion
           docker build \
             --no-cache \
-            --build-arg NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${{ secrets.NEXT_SERVER_ACTIONS_ENCRYPTION_KEY }} \
             -t ${{ secrets.DOCKER_HUB_USERNAME }}/vrhotelo-cms:${{ github.sha }} .
 
       - name: Push Docker image
