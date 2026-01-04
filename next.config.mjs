@@ -24,6 +24,7 @@ const nextConfig = {
     console.log(`[BUILD] Using build ID: ${buildId}`)
     return buildId
   },
+
   // Configure for large file uploads (5GB limit)
   experimental: {
     // Increase body size limit for large file uploads
@@ -32,6 +33,8 @@ const nextConfig = {
       // Allow all origins for server actions (needed for multi-tenant)
       // Using wildcard patterns for multi-tenant subdomains
       allowedOrigins: ['localhost:3000', '*.vrhotelo.com', '*.app.vrhotelo.com'],
+      encryptionKey: process.env.NEXT_SERVER_ACTIONS_ENCRYPTION_KEY,
+      keepInMemory: true,
     },
   },
   // Disable static optimization for payload admin to prevent stale caching
@@ -42,6 +45,10 @@ const nextConfig = {
       '.js': ['.ts', '.tsx', '.js', '.jsx'],
       '.mjs': ['.mts', '.mjs'],
     }
+
+    webpackConfig.cache = Object.freeze({
+      type: 'memory',
+    })
 
     return webpackConfig
   },
