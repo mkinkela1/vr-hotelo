@@ -9,6 +9,53 @@ function getUrlFromHost(host: string): string {
 }
 
 /**
+ * Get client IP address from request
+ * Checks various headers that proxies/load balancers might use
+ */
+function getClientIp(request: NextRequest): string | null {
+  // Check x-forwarded-for header (most common, contains comma-separated list)
+  const forwardedFor = request.headers.get('x-forwarded-for')
+  if (forwardedFor) {
+    // Take the first IP in the chain (original client)
+    return forwardedFor.split(',')[0].trim()
+  }
+
+  // Check x-real-ip header
+  const realIp = request.headers.get('x-real-ip')
+  if (realIp) {
+    return realIp.trim()
+  }
+
+  // Check cf-connecting-ip (Cloudflare)
+  const cfIp = request.headers.get('cf-connecting-ip')
+  if (cfIp) {
+    return cfIp.trim()
+  }
+
+  // If no IP found in headers, return null
+  return null
+}
+
+/**
+ * Get blocked IPs from environment variable
+ * IPs are comma-separated
+ */
+function getBlockedIps(): Set<string> {
+  const blockedIpsEnv = process.env.BLOCKED_IPS
+  if (!blockedIpsEnv) {
+    return new Set()
+  }
+
+  // Split by comma, trim whitespace, and filter out empty strings
+  const ips = blockedIpsEnv
+    .split(',')
+    .map((ip) => ip.trim())
+    .filter((ip) => ip.length > 0)
+
+  return new Set(ips)
+}
+
+/**
  * Check if request is a server action
  * In Next.js 15, server actions can have various header patterns
  */
@@ -104,6 +151,21 @@ function logServerAction(request: NextRequest) {
  * Handles tenant detection, cookie management, CORS, and server action debugging
  */
 export async function middleware(request: NextRequest) {
+  // Check for blocked IPs first
+  const blockedIps = getBlockedIps()
+  if (blockedIps.size > 0) {
+    const clientIp = getClientIp(request)
+    if (clientIp && blockedIps.has(clientIp)) {
+      console.log(`🚫 Blocked request from IP: ${clientIp}`)
+      return new NextResponse('Forbidden', {
+        status: 403,
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+      })
+    }
+  }
+
   const { pathname, search } = request.nextUrl
   const host = request.headers.get('host') || ''
   const cleanHostname = getUrlFromHost(host)
