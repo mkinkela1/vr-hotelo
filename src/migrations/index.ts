@@ -8,6 +8,7 @@ import * as migration_20251116_232749_update_media from './20251116_232749_updat
 import * as migration_20251207_175806_revert_locale from './20251207_175806_revert_locale';
 import * as migration_20251213_103841_locale_title from './20251213_103841_locale_title';
 import * as migration_20260201_194711_add_slovenian_locale from './20260201_194711_add_slovenian_locale';
+import * as migration_20260201_201945_change_si_to_sl from './20260201_201945_change_si_to_sl';
 
 export const migrations = [
   {
@@ -59,5 +60,10 @@ export const migrations = [
     up: migration_20260201_194711_add_slovenian_locale.up,
     down: migration_20260201_194711_add_slovenian_locale.down,
     name: '20260201_194711_add_slovenian_locale'
+  },
+  {
+    up: migration_20260201_201945_change_si_to_sl.up,
+    down: migration_20260201_201945_change_si_to_sl.down,
+    name: '20260201_201945_change_si_to_sl'
   },
 ];
