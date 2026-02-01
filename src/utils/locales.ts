@@ -6,6 +6,7 @@ export const locales = [
   { label: 'French', code: 'fr' },
   { label: 'German', code: 'de' },
   { label: 'Italian', code: 'it' },
+  { label: 'Slovenian', code: 'si' },
 ] as const satisfies Locale[]
 
 type LocaleCode = (typeof locales)[number]['code']
