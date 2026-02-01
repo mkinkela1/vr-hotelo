@@ -233,7 +233,7 @@ export interface Media {
   /**
    * Select one or more locales for this media
    */
-  locale?: ('hr' | 'en' | 'fr' | 'de' | 'it')[] | null;
+  locale?: ('hr' | 'en' | 'fr' | 'de' | 'it' | 'si')[] | null;
   /**
    * Title for each selected locale
    */
@@ -242,7 +242,7 @@ export interface Media {
         /**
          * Select the locale for this title
          */
-        locale: 'hr' | 'en' | 'fr' | 'de' | 'it';
+        locale: 'hr' | 'en' | 'fr' | 'de' | 'it' | 'si';
         /**
          * Title in this locale
          */
