@@ -106,6 +106,11 @@ export const Tenants: CollectionConfig = {
           type: 'textarea',
           label: 'Italian',
         },
+        {
+          name: 'sr',
+          type: 'textarea',
+          label: 'Serbian',
+        },
       ],
     },
     {

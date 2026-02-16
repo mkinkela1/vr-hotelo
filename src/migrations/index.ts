@@ -9,6 +9,7 @@ import * as migration_20251207_175806_revert_locale from './20251207_175806_reve
 import * as migration_20251213_103841_locale_title from './20251213_103841_locale_title';
 import * as migration_20260201_194711_add_slovenian_locale from './20260201_194711_add_slovenian_locale';
 import * as migration_20260201_201945_change_si_to_sl from './20260201_201945_change_si_to_sl';
+import * as migration_20260216_120000_add_serbian_locale from './20260216_120000_add_serbian_locale';
 
 export const migrations = [
   {
@@ -65,5 +66,10 @@ export const migrations = [
     up: migration_20260201_201945_change_si_to_sl.up,
     down: migration_20260201_201945_change_si_to_sl.down,
     name: '20260201_201945_change_si_to_sl'
+  },
+  {
+    up: migration_20260216_120000_add_serbian_locale.up,
+    down: migration_20260216_120000_add_serbian_locale.down,
+    name: '20260216_120000_add_serbian_locale'
   },
 ];
